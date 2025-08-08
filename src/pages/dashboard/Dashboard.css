@@ -1,0 +1,135 @@
+.infoBoard {
+    width: 1000px;
+    height: 156px;
+    top: 132px;
+    border-radius: 12px;
+    padding: 40px;
+    gap: 40px;
+    background: #F9F9F9;
+    margin-top: 120px;
+    margin-left: 24px;
+    box-shadow: 0px 4px 10px 0px #a098ae50;
+}
+
+.BoardInfoText p{
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #A098AE;
+}
+
+.BoardInfoText h1{
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #303972;
+}
+
+.BoardInfoIcon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+}
+
+.pieCircle {
+    box-shadow: 0px 4px 10px 0px #a098ae50;
+}
+
+.pieNotes,
+.pieCircle h1 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: #303972;
+}
+
+.pieNotes {
+    box-shadow: 0px 4px 10px 0px #a098ae50;
+}
+
+.olpieNotes {
+    list-style-type:decimal;
+}
+
+.olpieNotes li {
+    font-size: 18px;
+    margin: 5px;
+    text-align: start;
+    color: #A098AE;
+}
+
+.olpieNotes li::marker {
+    color: #FB7D5B; /* Purple color for numbers */
+    font-weight: bold;
+}
+
+/* Dashboard.css updates */
+.dashboard-content {
+    width: calc(100% - 250px); /* Adjust based on your sidebar width */
+    padding: 20px;
+}
+
+.dashboard-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.dashboard-card {
+    background: #F9F9F9;
+    border-radius: 10px;
+    padding: 20px;
+    height: 100%;
+}
+
+.dashboard-card h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #4D44B5;
+}
+
+.chart-container {
+    height: 300px;
+    margin-top: 20px;
+}
+
+.gender-stats, .city-list {
+    margin-top: 20px;
+    padding: 10px;
+    background: #fff;
+    border-radius: 5px;
+}
+
+.city-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.city-item:last-child {
+    border-bottom: none;
+}
+
+.city-name {
+    font-weight: bold;
+    color: #4D44B5;
+}
+
+.city-count {
+    color: #303972;
+}
+
+.notes-card ol {
+    padding-left: 20px;
+}
+
+.notes-card li {
+    margin-bottom: 10px;
+    color: #303972;
+}
