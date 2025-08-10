@@ -87,41 +87,39 @@ const Exams = () => {
     fetchSearchSubjects();
   }, [searchData.class, searchData.semester]);
 
- const fetchMarks = async () => {
-  try {
-    setLoading(true);
-    let url = 'http://localhost:3000/dashboard/marks';
-    let options = { method: 'POST', headers: { 'Content-Type': 'application/json' } };
+  const fetchMarks = async () => {
+    try {
+      const filters = {};
 
-    const hasStudentId = searchData.id.trim() !== '';
-    const hasClass = searchData.class.trim() !== '';
-    const hasSemester = searchData.semester !== '' && searchData.semester !== null && searchData.semester !== undefined;
+      if (searchData.id.trim() !== '') filters.id = searchData.id.trim();
+      if (searchData.class.trim() !== '') filters.class = searchData.class.trim();
+      if (searchData.semester !== '' && searchData.semester !== null && searchData.semester !== undefined)
+        filters.semester = searchData.semester;
+      if (searchData.subject.trim() !== '') filters.subject = searchData.subject.trim();
 
-    if (hasStudentId) {
-      url += '/student';
-      options.body = JSON.stringify({ id: searchData.id.trim() });
-    } else if (hasClass && hasSemester) {
-      url += '/subject';
-      options.body = JSON.stringify({
-        class: searchData.class.trim(),
-        semester: searchData.semester,
-        subject: searchData.subject || ''
+      if (Object.keys(filters).length === 0) {
+        throw new Error('Please provide at least one filter');
+      }
+
+      setLoading(true);
+
+      const res = await fetch('http://localhost:3000/dashboard/marks/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(filters)
       });
-    } else {
-      throw new Error('Please provide Student ID or Class + Semester');
-    }
 
-    const res = await fetch(url, options);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message);
-    setMarks(data.data || []);
-  } catch (err) {
-    setError(err.message);
-    toast.error(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      setMarks(data.data || []);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -151,7 +149,7 @@ const Exams = () => {
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message);
       resetForm();
-      fetchMarks();
+      // No automatic fetchMarks here as requested
     } catch (err) {
       toast.error(err.message);
     }
@@ -174,7 +172,7 @@ const Exams = () => {
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message);
       resetForm();
-      fetchMarks();
+      // No automatic fetchMarks here as requested
     } catch (err) {
       toast.error(err.message);
     }
@@ -187,7 +185,7 @@ const Exams = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message);
-      fetchMarks();
+      // No automatic fetchMarks here as requested
     } catch (err) {
       toast.error(err.message);
     }
@@ -324,7 +322,13 @@ const Exams = () => {
           </div>
 
           {/* Marks List */}
-          {loading ? <p>Loading...</p> : error ? <p className="text-red-500">{error}</p> : marks.length === 0 ? <p>No marks found.</p> : (
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : marks.length === 0 ? (
+            <p>No marks found.</p>
+          ) : (
             <div className="flex flex-col gap-4">
               {marks.map(mark => (
                 <div key={mark._id} className="cardInfoBoard flex justify-between items-center flex-col md:flex-row gap-4">

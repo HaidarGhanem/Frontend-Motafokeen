@@ -2,33 +2,35 @@ import SideBar from '../../components/SideBar/SideBar';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { MdDeleteForever } from 'react-icons/md';
+import { MdDeleteForever, MdClose } from 'react-icons/md';
 import { FaUserEdit } from 'react-icons/fa';
 
 const Employees = () => {
-  // Form states for creating new employee
+  // Create employee form states
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [department, setDepartment] = useState('');
+  const [residence, setResidence] = useState('');   // replaced from department
   const [position, setPosition] = useState('');
+
   const [allEmployees, setAllEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // States for editing employee
+  // States for editing employee & modal open state
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [editFirstName, setEditFirstName] = useState('');
   const [editLastName, setEditLastName] = useState('');
   const [editPhoneNumber, setEditPhoneNumber] = useState('');
   const [editEmail, setEditEmail] = useState('');
-  const [editDepartment, setEditDepartment] = useState('');
+  const [editResidence, setEditResidence] = useState('');   // replaced from editDepartment
   const [editPosition, setEditPosition] = useState('');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  // Modal for details
+  // States for showing details modal
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   // Fetch all employees
   const fetchEmployees = async () => {
@@ -41,7 +43,6 @@ const Employees = () => {
       });
 
       if (!response.ok) {
-        // HTTP error status
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch employees');
       }
@@ -76,7 +77,7 @@ const Employees = () => {
           last_name: lastName,
           phone_number: phoneNumber,
           email,
-          department,
+          residence,             // replaced from department
           position,
         }),
       });
@@ -88,12 +89,11 @@ const Employees = () => {
 
       const data = await response.json();
       if (data.success) {
-        // Clear form
         setFirstName('');
         setLastName('');
         setPhoneNumber('');
         setEmail('');
-        setDepartment('');
+        setResidence('');    // replaced from department
         setPosition('');
         toast.success(data.message);
         fetchEmployees();
@@ -105,18 +105,20 @@ const Employees = () => {
     }
   };
 
-  // Start editing employee
-  const handleUpdate = (item) => {
-    setEditingEmployee(item);
-    setEditFirstName(item.first_name || '');
-    setEditLastName(item.last_name || '');
-    setEditPhoneNumber(item.phone_number || '');
-    setEditEmail(item.email || '');
-    setEditDepartment(item.department || '');
-    setEditPosition(item.position || '');
+  // Open edit modal and fill form
+  const openEditModal = (employee) => {
+    setEditingEmployee(employee);
+    setEditFirstName(employee.first_name || '');
+    setEditLastName(employee.last_name || '');
+    setEditPhoneNumber(employee.phone_number || '');
+    setEditEmail(employee.email || '');
+    setEditResidence(employee.residence || '');    // replaced from department
+    setEditPosition(employee.position || '');
+    setIsEditModalOpen(true);
+    setIsDetailsModalOpen(false);
   };
 
-  // Submit edit update
+  // Submit edit form
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -128,7 +130,7 @@ const Employees = () => {
           last_name: editLastName,
           phone_number: editPhoneNumber,
           email: editEmail,
-          department: editDepartment,
+          residence: editResidence,    // replaced from department
           position: editPosition,
         }),
       });
@@ -142,6 +144,7 @@ const Employees = () => {
       if (data.success) {
         toast.success(data.message);
         setEditingEmployee(null);
+        setIsEditModalOpen(false);
         fetchEmployees();
       } else {
         toast.error(data.message || 'Failed to update employee');
@@ -177,15 +180,23 @@ const Employees = () => {
     }
   };
 
-  // Open modal details
-  const handleCardClick = (employee) => {
+  // Open details modal
+  const openDetailsModal = (employee) => {
     setSelectedEmployee(employee);
-    setIsModalOpen(true);
+    setIsDetailsModalOpen(true);
+    setIsEditModalOpen(false);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  // Close details modal
+  const closeDetailsModal = () => {
+    setIsDetailsModalOpen(false);
     setSelectedEmployee(null);
+  };
+
+  // Close edit modal
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingEmployee(null);
   };
 
   return (
@@ -236,12 +247,12 @@ const Employees = () => {
               />
             </div>
             <div>
-              <label className="form-label">Department</label>
+              <label className="form-label">Residence</label>
               <input
                 className="form-input"
                 type="text"
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
+                value={residence}
+                onChange={(e) => setResidence(e.target.value)}
               />
             </div>
             <div>
@@ -279,106 +290,42 @@ const Employees = () => {
                 <div
                   key={item._id}
                   className="bg-white shadow-sm border border-[#E6E6E6] p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center cursor-pointer"
-                  onClick={() => handleCardClick(item)}
+                  onClick={() => openDetailsModal(item)}
                 >
-                  {editingEmployee && editingEmployee._id === item._id ? (
-                    <form onSubmit={handleUpdateSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                      <input
-                        className="form-input"
-                        type="text"
-                        value={editFirstName}
-                        onChange={(e) => setEditFirstName(e.target.value)}
-                        required
-                      />
-                      <input
-                        className="form-input"
-                        type="text"
-                        value={editLastName}
-                        onChange={(e) => setEditLastName(e.target.value)}
-                        required
-                      />
-                      <input
-                        className="form-input"
-                        type="text"
-                        value={editPhoneNumber}
-                        onChange={(e) => setEditPhoneNumber(e.target.value)}
-                      />
-                      <input
-                        className="form-input"
-                        type="email"
-                        value={editEmail}
-                        onChange={(e) => setEditEmail(e.target.value)}
-                      />
-                      <input
-                        className="form-input"
-                        type="text"
-                        value={editDepartment}
-                        onChange={(e) => setEditDepartment(e.target.value)}
-                      />
-                      <input
-                        className="form-input"
-                        type="text"
-                        value={editPosition}
-                        onChange={(e) => setEditPosition(e.target.value)}
-                      />
-                      <div className="col-span-2 flex gap-2">
-                        <button
-                          type="submit"
-                          className="bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded"
-                        >
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setEditingEmployee(null);
-                          }}
-                          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-1 rounded"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center">
-                      <div className="flex items-center gap-4">
-                        <div className="text-sm text-[#333]">
-                          <p>
-                            <strong>First Name:</strong> {item.first_name}
-                          </p>
-                          <p>
-                            <strong>Last Name:</strong> {item.last_name}
-                          </p>
-                          <p>
-                            <strong>Phone Number:</strong> {item.phone_number}
-                          </p>
-                          <p>
-                            <strong>Email:</strong> {item.email}
-                          </p>
-                          <p>
-                            <strong>Department:</strong> {item.department}
-                          </p>
-                          <p>
-                            <strong>Position:</strong> {item.position}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleUpdate(item);
-                          }}
-                        >
-                          <FaUserEdit className="text-[#40277E] text-xl hover:scale-110 transition" />
-                        </button>
-                        <button onClick={(e) => handleDelete(item._id, e)}>
-                          <MdDeleteForever className="text-[#FB7D5B] text-xl hover:scale-110 transition" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  <div className="text-sm text-[#333]">
+                    <p>
+                      <strong>First Name:</strong> {item.first_name}
+                    </p>
+                    <p>
+                      <strong>Last Name:</strong> {item.last_name}
+                    </p>
+                    <p>
+                      <strong>Phone Number:</strong> {item.phone_number}
+                    </p>
+                    <p>
+                      <strong>Email:</strong> {item.email}
+                    </p>
+                    <p>
+                      <strong>Residence:</strong> {item.residence}
+                    </p>
+                    <p>
+                      <strong>Position:</strong> {item.position}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openEditModal(item);
+                      }}
+                      title="Edit Employee"
+                    >
+                      <FaUserEdit className="text-[#40277E] text-xl hover:scale-110 transition" />
+                    </button>
+                    <button onClick={(e) => handleDelete(item._id, e)} title="Delete Employee">
+                      <MdDeleteForever className="text-[#FB7D5B] text-xl hover:scale-110 transition" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -386,17 +333,18 @@ const Employees = () => {
         </div>
       </div>
 
-      {/* Modal for Employee Details */}
-      {isModalOpen && selectedEmployee && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-8 rounded-xl shadow-md w-11/12 md:w-1/2 lg:w-1/3 relative">
+      {/* Details Modal */}
+      {isDetailsModalOpen && selectedEmployee && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50 p-4">
+          <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md relative max-h-[90vh] overflow-y-auto">
             <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl"
+              onClick={closeDetailsModal}
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-3xl"
+              aria-label="Close details modal"
             >
               &times;
             </button>
-            <h2 className="text-2xl font-bold text-[#40277E] mb-4">Employee Details</h2>
+            <h2 className="text-2xl font-bold text-[#40277E] mb-6">Employee Details</h2>
             <div className="grid grid-cols-1 gap-4 text-sm text-[#333]">
               <p>
                 <strong>First Name:</strong> {selectedEmployee.first_name}
@@ -411,12 +359,101 @@ const Employees = () => {
                 <strong>Email:</strong> {selectedEmployee.email}
               </p>
               <p>
-                <strong>Department:</strong> {selectedEmployee.department}
+                <strong>Residence:</strong> {selectedEmployee.residence}
               </p>
               <p>
                 <strong>Position:</strong> {selectedEmployee.position}
               </p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalOpen && editingEmployee && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-lg max-w-3xl w-full p-8 max-h-[90vh] overflow-y-auto relative">
+            <button
+              onClick={closeEditModal}
+              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-3xl"
+              aria-label="Close edit modal"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold text-[#40277E] mb-6">Edit Employee</h2>
+            <form onSubmit={handleUpdateSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="form-label">First Name</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  value={editFirstName}
+                  onChange={(e) => setEditFirstName(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label className="form-label">Last Name</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  value={editLastName}
+                  onChange={(e) => setEditLastName(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label className="form-label">Phone Number</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  value={editPhoneNumber}
+                  onChange={(e) => setEditPhoneNumber(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="form-label">Email</label>
+                <input
+                  className="form-input"
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="form-label">Residence</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  value={editResidence}
+                  onChange={(e) => setEditResidence(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="form-label">Position</label>
+                <input
+                  className="form-input"
+                  type="text"
+                  value={editPosition}
+                  onChange={(e) => setEditPosition(e.target.value)}
+                />
+              </div>
+              <div className="col-span-2 flex justify-end gap-4 mt-4">
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-[#40277E] hover:bg-[#5b3ea4] text-white px-6 py-2 rounded-lg transition-all duration-200"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
