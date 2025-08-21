@@ -32,6 +32,7 @@ const Exams = () => {
 
   const [editingMark, setEditingMark] = useState(null);
 
+  // Fetch Classes
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -49,11 +50,14 @@ const Exams = () => {
     fetchInitialData();
   }, []);
 
+  // Fetch subjects for create form
   useEffect(() => {
     const fetchFormSubjects = async () => {
       if (formData.class && formData.semester) {
         try {
-          const res = await fetch(`http://localhost:3000/dashboard/subjects/by-class-semester?class=${formData.class}&semester=${formData.semester}`);
+          const res = await fetch(
+            `http://localhost:3000/dashboard/subjects/by-class-semester?class=${formData.class}&semester=${formData.semester}`
+          );
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
           setSubjects(data.data || []);
@@ -68,11 +72,14 @@ const Exams = () => {
     fetchFormSubjects();
   }, [formData.class, formData.semester]);
 
+  // Fetch subjects for search panel
   useEffect(() => {
     const fetchSearchSubjects = async () => {
       if (searchData.class && searchData.semester) {
         try {
-          const res = await fetch(`http://localhost:3000/dashboard/subjects/by-class-semester?class=${searchData.class}&semester=${searchData.semester}`);
+          const res = await fetch(
+            `http://localhost:3000/dashboard/subjects/by-class-semester?class=${searchData.class}&semester=${searchData.semester}`
+          );
           const data = await res.json();
           if (!res.ok) throw new Error(data.message);
           setSearchSubjects(data.data || []);
@@ -87,6 +94,7 @@ const Exams = () => {
     fetchSearchSubjects();
   }, [searchData.class, searchData.semester]);
 
+  // Fetch Marks with filters
   const fetchMarks = async () => {
     try {
       const filters = {};
@@ -94,11 +102,12 @@ const Exams = () => {
       if (searchData.id.trim() !== '') filters.id = searchData.id.trim();
       if (searchData.class.trim() !== '') filters.class = searchData.class.trim();
       if (searchData.semester !== '' && searchData.semester !== null && searchData.semester !== undefined)
-        filters.semester = searchData.semester;
+        filters.semester = Number(searchData.semester); // ✅ fix: ensure number
       if (searchData.subject.trim() !== '') filters.subject = searchData.subject.trim();
 
       if (Object.keys(filters).length === 0) {
-        throw new Error('Please provide at least one filter');
+        toast.error('Please provide at least one filter');
+        return;
       }
 
       setLoading(true);
@@ -111,7 +120,14 @@ const Exams = () => {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      setMarks(data.data || []);
+
+      // ✅ Add total marks calculation client-side
+      const withTotals = (data.data || []).map(m => ({
+        ...m,
+        total: (m.firstQuiz || 0) + (m.secondQuiz || 0) + (m.finalExam || 0)
+      }));
+
+      setMarks(withTotals);
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -121,6 +137,7 @@ const Exams = () => {
     }
   };
 
+  // Form input handlers
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -135,6 +152,7 @@ const Exams = () => {
     }));
   };
 
+  // Create Mark
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -143,18 +161,25 @@ const Exams = () => {
       const res = await fetch('http://localhost:3000/dashboard/marks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, class: className, subject, firstQuiz: +firstQuiz, secondQuiz: +secondQuiz, finalExam: +finalExam })
+        body: JSON.stringify({
+          id,
+          class: className,
+          subject,
+          firstQuiz: +firstQuiz,
+          secondQuiz: +secondQuiz,
+          finalExam: +finalExam
+        })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message);
       resetForm();
-      // No automatic fetchMarks here as requested
     } catch (err) {
       toast.error(err.message);
     }
   };
 
+  // Update Mark
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
@@ -172,12 +197,12 @@ const Exams = () => {
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message);
       resetForm();
-      // No automatic fetchMarks here as requested
     } catch (err) {
       toast.error(err.message);
     }
   };
 
+  // Delete Mark
   const handleDelete = async (id) => {
     try {
       if (!window.confirm('Are you sure?')) return;
@@ -185,23 +210,24 @@ const Exams = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       toast.success(data.message);
-      // No automatic fetchMarks here as requested
     } catch (err) {
       toast.error(err.message);
     }
   };
 
+  // Reset form
   const resetForm = () => {
     setEditingMark(null);
     setFormData({ id: '', class: '', semester: '', subject: '', firstQuiz: '', secondQuiz: '', finalExam: '' });
   };
 
+  // Start editing
   const startEditing = (mark) => {
     setEditingMark(mark);
     setFormData({
       id: mark.studentId.identifier,
       class: mark.subjectId.classId.name,
-      semester: mark.subjectId.semester.toString(),
+      semester: String(mark.subjectId.semester), // ✅ cast to string for select
       subject: mark.subjectId.name,
       firstQuiz: mark.firstQuiz,
       secondQuiz: mark.secondQuiz,
@@ -221,12 +247,27 @@ const Exams = () => {
           <form onSubmit={editingMark ? handleUpdate : handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="form-label">Student ID</label>
-              <input type="text" className="form-input" name="id" value={formData.id} onChange={handleInputChange} required disabled={!!editingMark} />
+              <input
+                type="text"
+                className="form-input"
+                name="id"
+                value={formData.id}
+                onChange={handleInputChange}
+                required
+                disabled={!!editingMark}
+              />
             </div>
 
             <div>
               <label className="form-label">Class</label>
-              <select className="form-input" name="class" value={formData.class} onChange={handleInputChange} required disabled={!!editingMark}>
+              <select
+                className="form-input"
+                name="class"
+                value={formData.class}
+                onChange={handleInputChange}
+                required
+                disabled={!!editingMark}
+              >
                 <option value="">Select Class</option>
                 {classes.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
               </select>
@@ -234,7 +275,14 @@ const Exams = () => {
 
             <div>
               <label className="form-label">Semester</label>
-              <select className="form-input" name="semester" value={formData.semester} onChange={handleInputChange} required disabled={!!editingMark}>
+              <select
+                className="form-input"
+                name="semester"
+                value={formData.semester}
+                onChange={handleInputChange}
+                required
+                disabled={!!editingMark}
+              >
                 <option value="">Select Semester</option>
                 <option value={1}>الفصل الأول</option>
                 <option value={2}>الفصل الثاني</option>
@@ -243,7 +291,14 @@ const Exams = () => {
 
             <div>
               <label className="form-label">Subject</label>
-              <select className="form-input" name="subject" value={formData.subject} onChange={handleInputChange} required disabled={!!editingMark}>
+              <select
+                className="form-input"
+                name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
+                required
+                disabled={!!editingMark}
+              >
                 <option value="">Select Subject</option>
                 {subjects.map(s => <option key={s._id} value={s.name}>{s.name}</option>)}
               </select>

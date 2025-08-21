@@ -9,6 +9,7 @@ import { MdDeleteForever } from 'react-icons/md';
 const Olympic = () => {
   const [name, setName] = useState('');
   const [className, setClassName] = useState('');
+  const [subject, setSubject] = useState('');
   const [level, setLevel] = useState('');
   const [nextDate, setNextDate] = useState('');
   const [teacher, setTeacher] = useState('');
@@ -20,6 +21,7 @@ const Olympic = () => {
   const [editingOlympic, setEditingOlympic] = useState(null);
   const [editName, setEditName] = useState('');
   const [editClass, setEditClass] = useState('');
+  const [editSubject, setEditSubject] = useState('');
   const [editLevel, setEditLevel] = useState('');
   const [editNextDate, setEditNextDate] = useState('');
   const [editTeacher, setEditTeacher] = useState('');
@@ -46,8 +48,9 @@ const Olympic = () => {
   }, []);
 
   const resetForm = () => {
-    setName(''); setClassName(''); setLevel(''); setNextDate('');
-    setTeacher(''); setAchievements(''); setSkills('');
+    setName(''); setClassName(''); setSubject('');
+    setLevel(''); setNextDate(''); setTeacher('');
+    setAchievements(''); setSkills('');
   };
 
   const handleSubmit = async (e) => {
@@ -57,7 +60,7 @@ const Olympic = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name, class: className, level, nextdate: nextDate,
+          name, class: className, subject, level, nextdate: nextDate,
           teacher,
           achievements: achievements.split(',').map(a => a.trim()).filter(Boolean),
           skills: skills.split(',').map(s => s.trim()).filter(Boolean),
@@ -76,6 +79,7 @@ const Olympic = () => {
     setEditingOlympic(olympic);
     setEditName(olympic.name);
     setEditClass(olympic.class);
+    setEditSubject(olympic.subject);
     setEditLevel(olympic.level || '');
     setEditNextDate(olympic.nextdate?.split('T')[0] || '');
     setEditTeacher(olympic.teacher || '');
@@ -90,7 +94,7 @@ const Olympic = () => {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: editName, class: editClass, level: editLevel, nextdate: editNextDate,
+          name: editName, class: editClass, subject: editSubject, level: editLevel, nextdate: editNextDate,
           teacher: editTeacher,
           achievements: editAchievements.split(',').map(a => a.trim()).filter(Boolean),
           skills: editSkills.split(',').map(s => s.trim()).filter(Boolean),
@@ -124,23 +128,25 @@ const Olympic = () => {
     <div className="flex">
       <SideBar />
       <div className="flex flex-col gap-12 w-full px-8 mt-32">
+        {/* Create Form */}
         <section className={sectionClass}>
           <h1 className="text-3xl font-bold text-[#40277E] mb-1">Create Olympic Record</h1>
           <p className="text-sm text-[#383838] mb-6">Enter details to create a new Olympic record</p>
           <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-            {[['Name', name, setName], ['Class', className, setClassName], ['Level', level, setLevel],
-              ['Next Date', nextDate, setNextDate], ['Teacher', teacher, setTeacher],
+            {[['Name', name, setName], ['Class', className, setClassName], ['Subject', subject, setSubject], 
+              ['Level', level, setLevel], ['Next Date', nextDate, setNextDate], ['Teacher', teacher, setTeacher],
               ['Achievements', achievements, setAchievements], ['Skills', skills, setSkills]
             ].map(([label, value, setter], i) => (
               <div key={i}>
                 <label className={labelClass}>{label}:</label>
-                <input type={label === 'Next Date' ? 'date' : 'text'} value={value} onChange={(e) => setter(e.target.value)} required={['Name','Class'].includes(label)} className={inputClass} />
+                <input type={label === 'Next Date' ? 'date' : 'text'} value={value} onChange={(e) => setter(e.target.value)} required={['Name','Class','Subject'].includes(label)} className={inputClass} />
               </div>
             ))}
             <button type="submit" className="col-span-2 w-fit px-6 py-2 rounded-xl bg-[#40277E] text-white font-semibold hover:bg-[#321f6e]">Create Record</button>
           </form>
         </section>
 
+        {/* Records Display */}
         <section className={sectionClass}>
           <h1 className="text-3xl font-bold text-[#40277E] mb-1">Olympics Control Panel</h1>
           <p className="text-sm text-[#383838] mb-6">Manage Olympic records - Edit or Delete</p>
@@ -151,12 +157,13 @@ const Olympic = () => {
                   {editingOlympic?._id === olympic._id ? (
                     <form onSubmit={handleUpdateSubmit} className="flex flex-col gap-3">
                       <div className="grid grid-cols-2 gap-4">
-                        {[['Name', editName, setEditName], ['Class', editClass, setEditClass], ['Level', editLevel, setEditLevel], ['Next Date', editNextDate, setEditNextDate],
+                        {[['Name', editName, setEditName], ['Class', editClass, setEditClass], ['Subject', editSubject, setEditSubject],
+                          ['Level', editLevel, setEditLevel], ['Next Date', editNextDate, setEditNextDate],
                           ['Teacher', editTeacher, setEditTeacher], ['Achievements', editAchievements, setEditAchievements], ['Skills', editSkills, setEditSkills]
                         ].map(([label, value, setter], i) => (
                           <div key={i}>
                             <label className={labelClass}>{label}:</label>
-                            <input type={label === 'Next Date' ? 'date' : 'text'} value={value} onChange={(e) => setter(e.target.value)} required={['Name','Class'].includes(label)} className={inputClass} />
+                            <input type={label === 'Next Date' ? 'date' : 'text'} value={value} onChange={(e) => setter(e.target.value)} required={['Name','Class','Subject'].includes(label)} className={inputClass} />
                           </div>
                         ))}
                       </div>
@@ -172,6 +179,7 @@ const Olympic = () => {
                         <div className="text-sm text-[#383838] grid grid-cols-2 gap-x-8 gap-y-1">
                           <p><strong>Name:</strong> {olympic.name}</p>
                           <p><strong>Class:</strong> {olympic.class}</p>
+                          <p><strong>Subject:</strong> {olympic.subject}</p>
                           {olympic.level && <p><strong>Level:</strong> {olympic.level}</p>}
                           {olympic.nextdate && <p><strong>Next:</strong> {new Date(olympic.nextdate).toLocaleDateString()}</p>}
                           {olympic.teacher && <p><strong>Teacher:</strong> {olympic.teacher}</p>}
