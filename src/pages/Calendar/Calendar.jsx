@@ -23,7 +23,7 @@ const Calendar = () => {
     const [filterDay, setFilterDay] = useState('');
     const [filterSubject, setFilterSubject] = useState('');
 
-    const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
 
     const fetchClasses = async () => {
         try {
