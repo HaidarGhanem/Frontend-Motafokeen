@@ -19,7 +19,7 @@ const Absence = () => {
 
   const fetchOptions = async () => {
     try {
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/students/options');
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/students/options');
       const data = await response.json();
       if (data.success) {
         setClasses(data.data.classes);
@@ -43,7 +43,7 @@ const Absence = () => {
       const classObj = classes.find(c => c._id === selectedClass);
       if (!subclassObj || !classObj) throw new Error('Invalid class or subclass selection');
 
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/absence/get-subclass-students', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/absence/get-subclass-students', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const Absence = () => {
       const classObj = classes.find(c => c._id === selectedClass);
       if (!subclassObj || !classObj) throw new Error('Invalid class or subclass selection');
 
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/absence/mark-attendance', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/absence/mark-attendance', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
