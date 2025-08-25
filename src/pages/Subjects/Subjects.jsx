@@ -28,7 +28,7 @@ const Subjects = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/subjects/classes');
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects/classes');
       const data = await response.json();
       if (data.success) {
         setClasses(data.data);
@@ -44,7 +44,7 @@ const Subjects = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/dashboard/subjects', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, semester, class: className })
@@ -66,7 +66,7 @@ const Subjects = () => {
 
   const fetchSubjects = async () => {
     try {
-      let url = 'http://localhost:3000/dashboard/subjects';
+      let url = 'https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects';
       if (selectedClassFilter) {
         url += `?class=${selectedClassFilter}`;
       }
@@ -95,7 +95,7 @@ const Subjects = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/subjects/${editingSubject._id}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects/${editingSubject._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editName, semester: editSemester, class: editClass })
@@ -115,7 +115,7 @@ const Subjects = () => {
 
   const handleDelete = async (subjectId) => {
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/subjects/${subjectId}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects/${subjectId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });

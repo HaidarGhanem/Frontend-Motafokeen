@@ -70,7 +70,7 @@ const Students = () => {
   // Fetch dropdown options
   const fetchOptions = async () => {
     try {
-      const res = await fetch('http://localhost:3000/dashboard/students/options');
+      const res = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/students/options');
       const data = await res.json();
       if (data.success) {
         setClasses(data.data.classes);
@@ -91,7 +91,7 @@ const Students = () => {
       const params = new URLSearchParams();
       if (filterClass) params.append('classId', filterClass);
       if (filterSubclass) params.append('subclassId', filterSubclass);
-      const res = await fetch(`http://localhost:3000/dashboard/students?${params.toString()}`);
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/students?${params.toString()}`);
       const data = await res.json();
       if (data.success) {
         setAllStudents(data.data);
@@ -128,7 +128,7 @@ const Students = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:3000/dashboard/students', {
+      const res = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/students', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -195,7 +195,7 @@ const Students = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/students/${editingStudent._id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/students/${editingStudent._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -231,7 +231,7 @@ const Students = () => {
   const handleDelete = async (studentId) => {
     if (!window.confirm('هل أنت متأكد من حذف هذا الطالب؟')) return;
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/students/${studentId}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/students/${studentId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' }
       });

@@ -37,7 +37,7 @@ const Employees = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:3000/dashboard/employees', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/employees', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -69,7 +69,7 @@ const Employees = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/dashboard/employees', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/employees', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -122,7 +122,7 @@ const Employees = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/employees/${editingEmployee._id}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/employees/${editingEmployee._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -158,7 +158,7 @@ const Employees = () => {
   const handleDelete = async (id, e) => {
     e.stopPropagation();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/employees/${id}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/employees/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });

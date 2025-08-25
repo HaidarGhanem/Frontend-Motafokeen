@@ -26,7 +26,7 @@ const Activities = () => {
   // For modal details
   const [selectedActivity, setSelectedActivity] = useState(null);
 
-  const API_URL = 'http://localhost:3000/dashboard/activities';
+  const API_URL = 'https://backend-motafokeen-ajrd.onrender.com/dashboard/activities';
 
   const fetchActivities = async () => {
     try {

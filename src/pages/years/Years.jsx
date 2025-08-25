@@ -24,7 +24,7 @@ const Years = () => {
 
   const fetchYears = async () => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/years/', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/years/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -47,7 +47,7 @@ const Years = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/dashboard/years', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/years', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ year, database, startDate, endDate })
@@ -79,7 +79,7 @@ const Years = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/years/${editingYear.year}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/years/${editingYear.year}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -104,7 +104,7 @@ const Years = () => {
 
   const handleDelete = async (year) => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/years', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/years', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ year })
@@ -123,7 +123,7 @@ const Years = () => {
 
   const handleActivate = async (year) => {
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/years/active/${year}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/years/active/${year}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -141,7 +141,7 @@ const Years = () => {
 
   const handleDeactivate = async (year) => {
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/years/deactivate/${year}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/years/deactivate/${year}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
       });

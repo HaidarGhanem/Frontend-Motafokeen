@@ -34,7 +34,7 @@ const Admins = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/dashboard/admins', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/admins', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -85,7 +85,7 @@ const Admins = () => {
 
   const fetchAdmins = async () => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/admins/', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/admins/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -121,7 +121,7 @@ const Admins = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/admins/${editingAdmin._id}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/admins/${editingAdmin._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -159,7 +159,7 @@ const Admins = () => {
 
   const handleDelete = async (adminName) => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/admins', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/admins', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

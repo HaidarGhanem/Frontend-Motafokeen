@@ -31,7 +31,7 @@ const Olympic = () => {
   const fetchOlympics = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3000/dashboard/olympics/all');
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/olympics/all');
       if (!response.ok) throw new Error('Failed to fetch Olympic records');
       const data = await response.json();
       setAllOlympics(data);
@@ -56,7 +56,7 @@ const Olympic = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/dashboard/olympics', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/olympics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -90,7 +90,7 @@ const Olympic = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/olympics/${editingOlympic._id}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/olympics/${editingOlympic._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -111,7 +111,7 @@ const Olympic = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/olympics/${id}`, { method: 'DELETE' });
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/olympics/${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Failed to delete record');
       toast.success('Record deleted');
       fetchOlympics();

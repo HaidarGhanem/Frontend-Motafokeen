@@ -48,7 +48,7 @@ const Cert = () => {
       formData.append('certificate', file);
       formData.append('id', id);
 
-      const response = await fetch('http://localhost:3000/dashboard/certifications/upload', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/certifications/upload', {
         method: 'POST',
         body: formData,
       });

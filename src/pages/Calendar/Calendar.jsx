@@ -27,7 +27,7 @@ const Calendar = () => {
 
     const fetchClasses = async () => {
         try {
-            const response = await fetch('http://localhost:3000/dashboard/classes');
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/classes');
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || 'Failed to fetch classes');
             
@@ -53,7 +53,7 @@ const Calendar = () => {
     const fetchSubclasses = async () => {
         if (!selectedClass) return;
         try {
-            const response = await fetch('http://localhost:3000/dashboard/subclasses/all', {
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/all', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const Calendar = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:3000/dashboard/schedule/subclass', {
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/schedule/subclass', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ const Calendar = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/dashboard/schedule/day', {
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/schedule/day', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -228,7 +228,7 @@ const Calendar = () => {
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:3000/dashboard/schedule/update', {
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/schedule/update', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -271,14 +271,14 @@ const Calendar = () => {
     const handleDelete = async (dayToDelete) => {
         try {
             // First get the subclassId
-            const classResponse = await fetch('http://localhost:3000/dashboard/classes');
+            const classResponse = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/classes');
             const classData = await classResponse.json();
             if (!classResponse.ok) throw new Error(classData.message || 'Failed to fetch class');
             
             const classInfo = classData.data.find(c => c.name === selectedClass);
             if (!classInfo) throw new Error('Class not found');
             
-            const subclassResponse = await fetch('http://localhost:3000/dashboard/subclasses/all', {
+            const subclassResponse = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/all', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ class: selectedClass })
@@ -291,7 +291,7 @@ const Calendar = () => {
             if (!subclassInfo) throw new Error('Subclass not found');
             
             // Now delete the day schedule
-            const response = await fetch(`http://localhost:3000/dashboard/schedule/${subclassInfo._id}/day/${dayToDelete}`, {
+            const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/schedule/${subclassInfo._id}/day/${dayToDelete}`, {
                 method: 'DELETE'
             });
 

@@ -49,7 +49,7 @@ const Exams = () => {
   // Fetch classes
   const fetchClasses = async () => {
     try {
-      const res = await fetch("http://localhost:3000/dashboard/classes");
+      const res = await fetch("https://backend-motafokeen-ajrd.onrender.com/dashboard/classes");
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch classes");
       setClasses(data.data);
@@ -63,7 +63,7 @@ const Exams = () => {
     try {
       const cls = classes.find(c => c.name === className);
       if (!cls) return setSubclasses([]);
-      const res = await fetch(`http://localhost:3000/dashboard/subclasses/by-class/${cls._id}`);
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/by-class/${cls._id}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setSubclasses(data.data);
@@ -80,7 +80,7 @@ const Exams = () => {
       const subObj = subclasses.find(s => s.name === sub);
       if (!clsObj || !subObj) return;
       const res = await fetch(
-        `http://localhost:3000/dashboard/students?classId=${clsObj._id}&subclassId=${subObj._id}`
+        `https://backend-motafokeen-ajrd.onrender.com/dashboard/students?classId=${clsObj._id}&subclassId=${subObj._id}`
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
@@ -95,7 +95,7 @@ const Exams = () => {
   const fetchMarks = async (filters = {}) => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:3000/dashboard/marks/search", {
+      const res = await fetch("https://backend-motafokeen-ajrd.onrender.com/dashboard/marks/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(filters)
@@ -115,7 +115,7 @@ const Exams = () => {
   const fetchSubjects = async (cls, sem) => {
     try {
       if (!cls || !sem) return [];
-      const res = await fetch(`http://localhost:3000/dashboard/subjects/by-class-semester?class=${cls}&semester=${sem}`);
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects/by-class-semester?class=${cls}&semester=${sem}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       return data.data || [];
@@ -129,7 +129,7 @@ const Exams = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3000/dashboard/marks", {
+      const res = await fetch("https://backend-motafokeen-ajrd.onrender.com/dashboard/marks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -162,7 +162,7 @@ const Exams = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/marks/${editingMark._id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/marks/${editingMark._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -187,7 +187,7 @@ const Exams = () => {
   // Delete mark
   const handleDelete = async (id) => {
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/marks/${id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/marks/${id}`, {
         method: "DELETE",
       });
       const data = await res.json();

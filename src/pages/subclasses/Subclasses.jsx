@@ -19,7 +19,7 @@ const Subclasses = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/classes', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/classes', {
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const Subclasses = () => {
     try {
       setLoading(prev => ({ ...prev, subclasses: true }));
 
-      const response = await fetch('http://localhost:3000/dashboard/subclasses/all', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/all', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const Subclasses = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/dashboard/subclasses', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -106,7 +106,7 @@ const Subclasses = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/subclasses/${editingSubclass.name}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/${editingSubclass.name}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ const Subclasses = () => {
 
   const handleDelete = async (subclassName) => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/subclasses', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses', {
         method: 'DELETE',
         headers: { 
           'Content-Type': 'application/json',

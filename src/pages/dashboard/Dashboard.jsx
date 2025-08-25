@@ -18,7 +18,7 @@ const Dashboard = () => {
         const fetchStatistics = async () => {
             try {
                 // Fetch main statistics
-                const response = await fetch('http://localhost:3000/dashboard/info');
+                const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/info');
                 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -30,7 +30,7 @@ const Dashboard = () => {
                     setStats(data.data);
                     
                     // Now fetch city distribution
-                    const cityResponse = await fetch('http://localhost:3000/dashboard/info/city-distribution');
+                    const cityResponse = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/info/city-distribution');
                     if (cityResponse.ok) {
                         const cityData = await cityResponse.json();
                         if (cityData.success) {
@@ -174,7 +174,7 @@ const Dashboard = () => {
                                             </div>
                                             <div className="w-full bg-gray-200 rounded-full h-2.5 mt-2">
                                                 <div 
-                                                    className="bg-[#A098AE] h-2.5 rounded-full" 
+                                                    className="bg-[#4D44B5] h-2.5 rounded-full" 
                                                     style={{ width: `${classInfo.percentage}% `}}
                                                 ></div>
                                             </div>
@@ -260,7 +260,7 @@ const Dashboard = () => {
                                     <div className="mb-4">
                                         <div className="flex items-center gap-2 mb-1">
                                             <FaFemale className="text-pink-400" />
-                                            <span className='text-[18px]' style={{color: '#4D44B5', fontWeight: 'bold'}}>أنثى (Female)</span>
+                                            <span className='text-[18px]' style={{color: '#4D44B5', fontWeight: 'bold'}}>female students</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span className='text-[16px]' style={{color: '#4D44B5'}}>{femaleCount} students</span>

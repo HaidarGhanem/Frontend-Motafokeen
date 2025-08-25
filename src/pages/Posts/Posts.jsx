@@ -66,7 +66,7 @@ const Posts = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/dashboard/posts', {
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/posts', {
                 method: 'POST',
                 body: formData
             });
@@ -89,7 +89,7 @@ const Posts = () => {
 
     const fetchPosts = async () => {
         try {
-            const response = await fetch('http://localhost:3000/dashboard/posts/', {
+            const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/posts/', {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -130,7 +130,7 @@ const Posts = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/dashboard/posts/${editingPost._id}`, {
+            const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/posts/${editingPost._id}`, {
                 method: 'PUT',
                 body: formData
             });
@@ -153,7 +153,7 @@ const Posts = () => {
 
     const handleDelete = async (postId) => {
         try {
-            const response = await fetch(`http://localhost:3000/dashboard/posts/${postId}`, {
+            const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/posts/${postId}`, {
                 method: 'DELETE',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -381,7 +381,7 @@ const Posts = () => {
                                                     {post.image && (
                                                         <div className="mt-4">
                                                             <img 
-                                                                src={`http://localhost:3000/dashboard/posts/${post._id}/image`} 
+                                                                src={`https://backend-motafokeen-ajrd.onrender.com/dashboard/posts/${post._id}/image`} 
                                                                 alt="Post" 
                                                                 className="max-w-full h-auto max-h-60 rounded-lg"
                                                             />

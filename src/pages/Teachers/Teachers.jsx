@@ -43,7 +43,7 @@ const Teachers = () => {
   const fetchTeachers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/dashboard/teachers/', {
+      const res = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/teachers/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -70,7 +70,7 @@ const Teachers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:3000/dashboard/teachers', {
+      const res = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/teachers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -137,7 +137,7 @@ const Teachers = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/teachers/${editingTeacher._id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/teachers/${editingTeacher._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -169,7 +169,7 @@ const Teachers = () => {
   const handleDelete = async (id, e) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/teachers/${id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/teachers/${id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -189,7 +189,7 @@ const Teachers = () => {
   const handleActivate = async (id, e) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/teachers/active/${id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/teachers/active/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -208,7 +208,7 @@ const Teachers = () => {
   const handleDeactivate = async (id, e) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`http://localhost:3000/dashboard/teachers/deactivate/${id}`, {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/teachers/deactivate/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
       });

@@ -27,7 +27,7 @@ const SideBar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:3000/dashboard/auth/logout', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/auth/logout', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

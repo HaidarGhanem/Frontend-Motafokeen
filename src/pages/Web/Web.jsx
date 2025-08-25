@@ -65,7 +65,7 @@ const Web = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/dashboard/web', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/web', {
         method: 'POST',
         body: formData
       });
@@ -90,7 +90,7 @@ const Web = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('http://localhost:3000/dashboard/web');
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/web');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -133,7 +133,7 @@ const Web = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/web/${editingWeb._id}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/web/${editingWeb._id}`, {
         method: 'PUT',
         body: formData
       });
@@ -155,7 +155,7 @@ const Web = () => {
 
   const handleDelete = async (webId) => {
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/web/${webId}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/web/${webId}`, {
         method: 'DELETE'
       });
 
@@ -382,7 +382,7 @@ const Web = () => {
                                                     {web.image && (
                                                         <div className="mt-4">
                                                             <img 
-                                                                src={`http://localhost:3000/api/web/${web._id}/image`} 
+                                                                src={`https://backend-motafokeen-ajrd.onrender.com/api/web/${web._id}/image`} 
                                                                 alt="Web" 
                                                                 className="max-w-full h-auto max-h-60 rounded-lg"
                                                                 onError={(e) => {
