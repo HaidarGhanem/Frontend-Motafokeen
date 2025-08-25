@@ -49,7 +49,7 @@ const Students = () => {
   const [editSubclass, setEditSubclass] = useState('');
   const [editYear, setEditYear] = useState('');
   const [editGender, setEditGender] = useState('');
-  const [editNationality, setEditNationality] = useState('');
+  const [editNationality, setEditNationality] = useState('عربي سوري');
   const [editCity, setEditCity] = useState('');
   const [editBirthDate, setEditBirthDate] = useState('');
   const [editFatherName, setEditFatherName] = useState('');
@@ -179,12 +179,12 @@ const Students = () => {
     setEditFirstName(student.firstName);
     setEditMiddleName(student.middleName || '');
     setEditLastName(student.lastName);
-    setEditEmail(student.email);
+    setEditEmail(student.email || 'motafokeen.school@gmail.com');
     setEditClass(student.classId?._id || '');
     setEditSubclass(student.subclassId?._id || '');
     setEditYear(student.academicYearId?._id || '');
     setEditGender(student.gender || '');
-    setEditNationality(student.nationality || '');
+    setEditNationality(student.nationality || 'عربي سوري');
     setEditCity(student.city || '');
     setEditBirthDate(student.birthDate ? student.birthDate.slice(0, 10) : '');
     setEditFatherName(student.father_name || '');
@@ -250,7 +250,7 @@ const Students = () => {
   return (
     <div className="flex">
       <SideBar />
-      <div className="mt-[120px] ml-10 w-full pr-10">
+      <div className="mt-[120px] ml-10 w-full pr-10 flex-1">
 
         {/* Create Student Form */}
         <div className="bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16">
@@ -298,7 +298,6 @@ const Students = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
               />
             </div>
 

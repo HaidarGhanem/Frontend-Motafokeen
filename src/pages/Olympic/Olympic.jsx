@@ -127,7 +127,7 @@ const Olympic = () => {
   return (
     <div className="flex">
       <SideBar />
-      <div className="flex flex-col gap-12 w-full px-8 mt-32">
+      <div className="flex flex-col gap-12 w-full px-8 mt-32 flex-1">
         {/* Create Form */}
         <section className={sectionClass}>
           <h1 className="text-3xl font-bold text-[#40277E] mb-1">Create Olympic Record</h1>

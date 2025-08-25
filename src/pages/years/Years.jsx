@@ -160,7 +160,7 @@ const Years = () => {
   return (
     <div className='flex'>
       <SideBar />
-      <div className='mt-[120px] ml-10 w-full pr-10'>
+      <div className='mt-[120px] ml-10 w-full pr-10 flex-1'>
         {/* Create Year Form */}
         <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16'>
           <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Create Academic Year</h2>
@@ -230,9 +230,9 @@ const Years = () => {
                         <button onClick={() => handleUpdate(item)}><FaUserEdit className='text-[#40277E] text-xl hover:scale-110 transition' /></button>
                         <button onClick={() => handleDelete(item.year)}><MdDeleteForever className='text-[#FB7D5B] text-xl hover:scale-110 transition' /></button>
                         {item.active ? (
-                          <button onClick={() => handleDeactivate(item.year)}><IoPower className='text-green-500 text-xl hover:scale-110 transition' /></button>
+                          <button onClick={() => handleDeactivate(item._id)}><IoPower className='text-green-500 text-xl hover:scale-110 transition' /></button>
                         ) : (
-                          <button onClick={() => handleActivate(item.year)}><IoPowerOutline className='text-gray-500 text-xl hover:scale-110 transition' /></button>
+                          <button onClick={() => handleActivate(item._id)}><IoPowerOutline className='text-gray-500 text-xl hover:scale-110 transition' /></button>
                         )}
                       </div>
                     </div>

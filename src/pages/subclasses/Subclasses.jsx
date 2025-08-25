@@ -168,7 +168,7 @@ const Subclasses = () => {
   return (
     <div className="flex">
       <SideBar />
-      <div className="mt-[120px] ml-10 w-full pr-10 flex flex-col gap-20">
+      <div className="mt-[120px] ml-10 w-full pr-10 flex-1 flex-col gap-20">
         {/* Create Subclass Section */}
         <div className="bg-[#FAF9FC] p-8 rounded-xl shadow-md w-full max-w-[1200px]">
           <h2 className="text-2xl font-bold text-[#40277E] mb-2">Subclasses Management</h2>

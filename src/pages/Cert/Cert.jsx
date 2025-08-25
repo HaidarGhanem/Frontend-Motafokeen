@@ -106,7 +106,7 @@ const Cert = () => {
   return (
     <div className="flex">
       <SideBar />
-      <main className="mt-[120px] ml-10 w-full pr-10 flex flex-col gap-20">
+      <main className="flex-1 mt-[120px] ml-10 w-full pr-10 flex flex-col gap-20">
 
         {/* Upload Certificate Header */}
         <section className="flex flex-col gap-2 items-start">

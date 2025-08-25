@@ -188,7 +188,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className='sidebar-container flex flex-col h-full bg-[#40277E] w-[242px]'>
+    <div className='sidebar-container flex flex-col h-[100wh] bg-[#40277E] w-[242px]'>
       <div className='flex-1 overflow-y-auto'>
         <div className='LogoFrame flex justify-center items-center flex-col pt-[32px]'>
           <img src="/LogoFrame.png" alt="Logo" className='w-[50px] h-[50px]' />

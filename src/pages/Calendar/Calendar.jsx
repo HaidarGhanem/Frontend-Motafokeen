@@ -349,249 +349,70 @@ const Calendar = () => {
     return (
         <div className='flex'>
             <SideBar />
-        <div className="mainCalander bg-gray-50">
-            
-            <div className="flex-1 p-8 ml-64">
-                {/* Create Schedule Section */}
-                <div className="mb-12 bg-white rounded-lg shadow p-6">
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-[#40277E]">Create Schedule</h1>
-                        <p className="text-gray-600">Please select class, subclass, day and add schedule items</p>
-                    </div>
-                    
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {/* Class Select */}
-                            <div className="space-y-2">
-                                <label className="block text-gray-700 font-medium">Class:</label>
-                                <select
-                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
-                                    value={selectedClass}
-                                    onChange={(e) => setSelectedClass(e.target.value)}
-                                >
-                                    {classes.map(cls => (
-                                        <option key={cls._id} value={cls.name}>{cls.name}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Subclass Select */}
-                            <div className="space-y-2">
-                                <label className="block text-gray-700 font-medium">Subclass:</label>
-                                <select
-                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
-                                    value={selectedSubclass}
-                                    onChange={(e) => setSelectedSubclass(e.target.value)}
-                                    disabled={!selectedClass || subclasses.length === 0}
-                                >
-                                    {subclasses.length > 0 ? (
-                                        subclasses.map(sub => (
-                                            <option key={sub._id} value={sub.name}>{sub.name}</option>
-                                        ))
-                                    ) : (
-                                        <option value="">No subclasses available</option>
-                                    )}
-                                </select>
-                            </div>
-
-                            {/* Day Select */}
-                            <div className="space-y-2">
-                                <label className="block text-gray-700 font-medium">Day:</label>
-                                <select
-                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
-                                    value={day}
-                                    onChange={(e) => setDay(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Select a day</option>
-                                    {days.map(d => (
-                                        <option key={d} value={d}>{d}</option>
-                                    ))}
-                                </select>
-                            </div>
+            <div className="mainCalendar bg-gray-50 flex-1 ml-5 mt-[100px]">
+                <div className="p-8">
+                    {/* Create Schedule Section */}
+                    <div className="mb-12 bg-white rounded-lg shadow p-6">
+                        <div className="mb-6">
+                            <h1 className="text-2xl font-bold text-[#40277E]">Create Schedule</h1>
+                            <p className="text-gray-600">Please select class, subclass, day and add schedule items</p>
                         </div>
-
-                        {/* Schedule Items */}
-                        <div className="space-y-4">
-                            {items.map((item, index) => (
-                                <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
-                                    <div className="space-y-1">
-                                        <label className="text-sm text-gray-600">Subject</label>
-                                        <input
-                                            className="w-full p-2 border border-gray-300 rounded"
-                                            type="text"
-                                            placeholder="Subject"
-                                            value={item.subject}
-                                            onChange={(e) => handleItemChange(index, 'subject', e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm text-gray-600">Teacher</label>
-                                        <input
-                                            className="w-full p-2 border border-gray-300 rounded"
-                                            type="text"
-                                            placeholder="Teacher"
-                                            value={item.teacher}
-                                            onChange={(e) => handleItemChange(index, 'teacher', e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm text-gray-600">Start Time</label>
-                                        <input
-                                            className="w-full p-2 border border-gray-300 rounded"
-                                            type="time"
-                                            value={item.startTime}
-                                            onChange={(e) => handleItemChange(index, 'startTime', e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-sm text-gray-600">End Time</label>
-                                        <input
-                                            className="w-full p-2 border border-gray-300 rounded"
-                                            type="time"
-                                            value={item.endTime}
-                                            onChange={(e) => handleItemChange(index, 'endTime', e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => removeItem(index)}
-                                        className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="flex space-x-3">
-                            <button
-                                type="button"
-                                onClick={addItem}
-                                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                            >
-                                Add Item
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-[#40277E] text-white rounded hover:bg-orange-600 transition-colors"
-                            >
-                                Create Schedule
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                {/* Schedules Control Panel */}
-                <div className="bg-white rounded-lg shadow p-6">
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-[#40277E]">Schedules Control Panel</h1>
-                        <p className="text-gray-600">Here You Can View, Edit and Delete Schedules</p>
                         
-                        {/* Filters */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div className="space-y-2">
-                                <label className="block text-gray-700 font-medium">Filter by Day:</label>
-                                <select
-                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
-                                    value={filterDay}
-                                    onChange={(e) => setFilterDay(e.target.value)}
-                                >
-                                    <option value="">All Days</option>
-                                    {days.map(d => (
-                                        <option key={d} value={d}>{d}</option>
-                                    ))}
-                                </select>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* Class Select */}
+                                <div className="space-y-2">
+                                    <label className="block text-gray-700 font-medium">Class:</label>
+                                    <select
+                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
+                                        value={selectedClass}
+                                        onChange={(e) => setSelectedClass(e.target.value)}
+                                    >
+                                        {classes.map(cls => (
+                                            <option key={cls._id} value={cls.name}>{cls.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Subclass Select */}
+                                <div className="space-y-2">
+                                    <label className="block text-gray-700 font-medium">Subclass:</label>
+                                    <select
+                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
+                                        value={selectedSubclass}
+                                        onChange={(e) => setSelectedSubclass(e.target.value)}
+                                        disabled={!selectedClass || subclasses.length === 0}
+                                    >
+                                        {subclasses.length > 0 ? (
+                                            subclasses.map(sub => (
+                                                <option key={sub._id} value={sub.name}>{sub.name}</option>
+                                            ))
+                                        ) : (
+                                            <option value="">No subclasses available</option>
+                                        )}
+                                    </select>
+                                </div>
+
+                                {/* Day Select */}
+                                <div className="space-y-2">
+                                    <label className="block text-gray-700 font-medium">Day:</label>
+                                    <select
+                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
+                                        value={day}
+                                        onChange={(e) => setDay(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Select a day</option>
+                                        {days.map(d => (
+                                            <option key={d} value={d}>{d}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="block text-gray-700 font-medium">Filter by Subject:</label>
-                                <input
-                                    className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
-                                    type="text"
-                                    placeholder="Subject name"
-                                    value={filterSubject}
-                                    onChange={(e) => setFilterSubject(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {loading ? (
-                        <div className="flex justify-center items-center py-8">
-                            <p className="text-gray-500">Loading schedules...</p>
-                        </div>
-                    ) : error ? (
-                        <p className="text-red-500 py-4">{error}</p>
-                    ) : filteredSchedules.length > 0 ? (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {filteredSchedules.map((schedule) => (
-                                        schedule.items.map((item, itemIndex) => (
-                                            <tr key={`${schedule.day}-${itemIndex}`} className="hover:bg-gray-50">
-                                                {itemIndex === 0 && (
-                                                    <td rowSpan={schedule.items.length} className="px-6 py-4 whitespace-nowrap align-top">
-                                                        <span className="font-medium">{schedule.day}</span>
-                                                    </td>
-                                                )}
-                                                <td className="px-6 py-4 whitespace-nowrap">{item.subject}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">{item.teacher}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    {item.startTime} - {item.endTime}
-                                                </td>
-                                                {itemIndex === 0 && (
-                                                    <td rowSpan={schedule.items.length} className="px-6 py-4 whitespace-nowrap align-top">
-                                                        <div className="flex space-x-2">
-                                                            <button 
-                                                                onClick={() => handleUpdate(schedule)}
-                                                                className="text-blue-500 hover:text-blue-700 p-1 rounded-full hover:bg-blue-50"
-                                                            >
-                                                                <FaEdit size={18} />
-                                                            </button>
-                                                            <button 
-                                                                onClick={() => handleDelete(schedule.day)}
-                                                                className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
-                                                            >
-                                                                <MdDeleteForever size={20} />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                )}
-                                            </tr>
-                                        ))
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    ) : (
-                        <div className="flex justify-center items-center py-8">
-                            <p className="text-gray-500">No schedules found matching your criteria</p>
-                        </div>
-                    )}
-                </div>
-            </div>
-            
-            {/* Edit Schedule Modal */}
-            {editingSchedule && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-full max-w-2xl mx-4">
-                        <h2 className="text-xl font-bold mb-4 text-gray-800">Edit Schedule for {editDay}</h2>
-                        <form onSubmit={handleUpdateSubmit} className="space-y-4">
-                            <div className="space-y-3">
-                                {editItems.map((item, index) => (
+
+                            {/* Schedule Items */}
+                            <div className="space-y-4">
+                                {items.map((item, index) => (
                                     <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
                                         <div className="space-y-1">
                                             <label className="text-sm text-gray-600">Subject</label>
@@ -600,7 +421,7 @@ const Calendar = () => {
                                                 type="text"
                                                 placeholder="Subject"
                                                 value={item.subject}
-                                                onChange={(e) => handleEditItemChange(index, 'subject', e.target.value)}
+                                                onChange={(e) => handleItemChange(index, 'subject', e.target.value)}
                                                 required
                                             />
                                         </div>
@@ -611,7 +432,7 @@ const Calendar = () => {
                                                 type="text"
                                                 placeholder="Teacher"
                                                 value={item.teacher}
-                                                onChange={(e) => handleEditItemChange(index, 'teacher', e.target.value)}
+                                                onChange={(e) => handleItemChange(index, 'teacher', e.target.value)}
                                                 required
                                             />
                                         </div>
@@ -621,7 +442,7 @@ const Calendar = () => {
                                                 className="w-full p-2 border border-gray-300 rounded"
                                                 type="time"
                                                 value={item.startTime}
-                                                onChange={(e) => handleEditItemChange(index, 'startTime', e.target.value)}
+                                                onChange={(e) => handleItemChange(index, 'startTime', e.target.value)}
                                                 required
                                             />
                                         </div>
@@ -631,13 +452,13 @@ const Calendar = () => {
                                                 className="w-full p-2 border border-gray-300 rounded"
                                                 type="time"
                                                 value={item.endTime}
-                                                onChange={(e) => handleEditItemChange(index, 'endTime', e.target.value)}
+                                                onChange={(e) => handleItemChange(index, 'endTime', e.target.value)}
                                                 required
                                             />
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => removeEditItem(index)}
+                                            onClick={() => removeItem(index)}
                                             className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                                         >
                                             Remove
@@ -645,48 +466,225 @@ const Calendar = () => {
                                     </div>
                                 ))}
                             </div>
-                            <div className="flex justify-end space-x-3 pt-4">
+
+                            <div className="flex space-x-3">
                                 <button
                                     type="button"
-                                    onClick={() => setEditingSchedule(null)}
-                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={addEditItem}
+                                    onClick={addItem}
                                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                                 >
                                     Add Item
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                                    className="px-4 py-2 bg-[#40277E] text-white rounded hover:bg-orange-600 transition-colors"
                                 >
-                                    Update Schedule
+                                    Create Schedule
                                 </button>
                             </div>
                         </form>
                     </div>
-                </div>
-            )}
 
-            <ToastContainer
-                position="bottom-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-        </div>
+                    {/* Schedules Control Panel */}
+                    <div className="bg-white rounded-lg shadow p-6">
+                        <div className="mb-6">
+                            <h1 className="text-2xl font-bold text-[#40277E]">Schedules Control Panel</h1>
+                            <p className="text-gray-600">Here You Can View, Edit and Delete Schedules</p>
+                            
+                            {/* Filters */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div className="space-y-2">
+                                    <label className="block text-gray-700 font-medium">Filter by Day:</label>
+                                    <select
+                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
+                                        value={filterDay}
+                                        onChange={(e) => setFilterDay(e.target.value)}
+                                    >
+                                        <option value="">All Days</option>
+                                        {days.map(d => (
+                                            <option key={d} value={d}>{d}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="block text-gray-700 font-medium">Filter by Subject:</label>
+                                    <input
+                                        className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-200"
+                                        type="text"
+                                        placeholder="Subject name"
+                                        value={filterSubject}
+                                        onChange={(e) => setFilterSubject(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {loading ? (
+                            <div className="flex justify-center items-center py-8">
+                                <p className="text-gray-500">Loading schedules...</p>
+                            </div>
+                        ) : error ? (
+                            <p className="text-red-500 py-4">{error}</p>
+                        ) : filteredSchedules.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Day</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teacher</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {filteredSchedules.map((schedule) => (
+                                            schedule.items.map((item, itemIndex) => (
+                                                <tr key={`${schedule.day}-${itemIndex}`} className="hover:bg-gray-50">
+                                                    {itemIndex === 0 && (
+                                                        <td rowSpan={schedule.items.length} className="px-6 py-4 whitespace-nowrap align-top">
+                                                            <span className="font-medium">{schedule.day}</span>
+                                                        </td>
+                                                    )}
+                                                    <td className="px-6 py-4 whitespace-nowrap">{item.subject}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{item.teacher}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {item.startTime} - {item.endTime}
+                                                    </td>
+                                                    {itemIndex === 0 && (
+                                                        <td rowSpan={schedule.items.length} className="px-6 py-4 whitespace-nowrap align-top">
+                                                            <div className="flex space-x-2">
+                                                                <button 
+                                                                    onClick={() => handleUpdate(schedule)}
+                                                                    className="text-blue-500 hover:text-blue-700 p-1 rounded-full hover:bg-blue-50"
+                                                                >
+                                                                    <FaEdit size={18} />
+                                                                </button>
+                                                                <button 
+                                                                    onClick={() => handleDelete(schedule.day)}
+                                                                    className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
+                                                                >
+                                                                    <MdDeleteForever size={20} />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            ))
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div className="flex justify-center items-center py-8">
+                                <p className="text-gray-500">No schedules found matching your criteria</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                
+                {/* Edit Schedule Modal */}
+                {editingSchedule && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-lg w-full max-w-2xl mx-4">
+                            <h2 className="text-xl font-bold mb-4 text-gray-800">Edit Schedule for {editDay}</h2>
+                            <form onSubmit={handleUpdateSubmit} className="space-y-4">
+                                <div className="space-y-3">
+                                    {editItems.map((item, index) => (
+                                        <div key={index} className="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                                            <div className="space-y-1">
+                                                <label className="text-sm text-gray-600">Subject</label>
+                                                <input
+                                                    className="w-full p-2 border border-gray-300 rounded"
+                                                    type="text"
+                                                    placeholder="Subject"
+                                                    value={item.subject}
+                                                    onChange={(e) => handleEditItemChange(index, 'subject', e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm text-gray-600">Teacher</label>
+                                                <input
+                                                    className="w-full p-2 border border-gray-300 rounded"
+                                                    type="text"
+                                                    placeholder="Teacher"
+                                                    value={item.teacher}
+                                                    onChange={(e) => handleEditItemChange(index, 'teacher', e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm text-gray-600">Start Time</label>
+                                                <input
+                                                    className="w-full p-2 border border-gray-300 rounded"
+                                                    type="time"
+                                                    value={item.startTime}
+                                                    onChange={(e) => handleEditItemChange(index, 'startTime', e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm text-gray-600">End Time</label>
+                                                <input
+                                                    className="w-full p-2 border border-gray-300 rounded"
+                                                    type="time"
+                                                    value={item.endTime}
+                                                    onChange={(e) => handleEditItemChange(index, 'endTime', e.target.value)}
+                                                    required
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeEditItem(index)}
+                                                className="p-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                                            >
+                                                Remove
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex justify-end space-x-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setEditingSchedule(null)}
+                                        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={addEditItem}
+                                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                                    >
+                                        Add Item
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                                    >
+                                        Update Schedule
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
+            </div>
         </div>
     )
-    
 }
 
 export default Calendar;

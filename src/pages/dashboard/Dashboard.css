@@ -133,3 +133,108 @@
     margin-bottom: 10px;
     color: #303972;
 }
+
+/* Gender distribution styles */
+.gender-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.gender-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.gender-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.gender-bar {
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.gender-fill {
+    height: 100%;
+    border-radius: 5px;
+}
+
+.male-fill {
+    background-color: #609cfd; /* Blue for male */
+}
+
+.female-fill {
+    background-color: #f574b5; /* Pink for female */
+}
+
+/* Tabs styling */
+.tab-container {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+    color: #4D44B5;
+    border-bottom: 2px solid #4D44B5;
+}
+
+.tab-content {
+    padding: 20px 0;
+}
+
+/* City distribution specific styles */
+.city-stats {
+    margin-top: 15px;
+}
+
+.city-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.city-name {
+    font-weight: bold;
+    color: #4D44B5;
+}
+
+.city-count {
+    color: #4D44B5;
+    font-weight: bold;
+}
+
+.city-bar {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.city-fill {
+    height: 100%;
+    background-color: #4D44B5;
+    border-radius: 4px;
+}

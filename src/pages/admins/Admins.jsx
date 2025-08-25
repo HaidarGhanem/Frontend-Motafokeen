@@ -189,7 +189,7 @@ const Admins = () => {
     <>
       <div className='flex'>
         <SideBar />
-        <main className='admin-main-container'>
+        <main className='admin-main-container flex-1'>
           {/* Create Admin Section */}
           <section className='admin-section'>
             <header className='admin-section-header'>

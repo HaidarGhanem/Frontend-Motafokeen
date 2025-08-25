@@ -139,7 +139,7 @@ const Subjects = () => {
   return (
     <div className='flex'>
       <SideBar />
-      <div className='mt-[120px] ml-10 w-full pr-10'>
+      <div className='mt-[120px] ml-10 w-full pr-10 flex-1'>
         <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16'>
           <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Create Subject</h2>
           <p className='text-sm text-[#666] mb-6'>Fill all fields to create a new subject</p>

@@ -1,134 +1,108 @@
-import { useState, useEffect } from 'react';
 import SideBar from '../../components/SideBar/SideBar';
+import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Exams.css';
-import { FaEdit, FaTrash, FaSearch } from 'react-icons/fa';
+import { FaUserEdit } from 'react-icons/fa';
+import { MdDeleteForever } from "react-icons/md";
 
 const Exams = () => {
+  const [classes, setClasses] = useState([]);
+  const [subclasses, setSubclasses] = useState([]);
+  const [students, setStudents] = useState([]);
   const [marks, setMarks] = useState([]);
   const [subjects, setSubjects] = useState([]);
-  const [searchSubjects, setSearchSubjects] = useState([]);
-  const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [formData, setFormData] = useState({
-    id: '',
-    class: '',
-    semester: '',
-    subject: '',
-    firstQuiz: '',
-    secondQuiz: '',
-    finalExam: ''
-  });
+  // Form fields
+  const [className, setClassName] = useState('');
+  const [subclassName, setSubclassName] = useState('');
+  const [studentIdentifier, setStudentIdentifier] = useState('');
+  const [semester, setSemester] = useState('');
+  const [subject, setSubject] = useState('');
+  const [firstQuiz, setFirstQuiz] = useState('');
+  const [secondQuiz, setSecondQuiz] = useState('');
+  const [finalExam, setFinalExam] = useState('');
 
-  const [searchData, setSearchData] = useState({
-    id: '',
-    class: '',
-    semester: '',
-    subject: ''
-  });
-
+  // Edit state
   const [editingMark, setEditingMark] = useState(null);
+  const [editFirstQuiz, setEditFirstQuiz] = useState('');
+  const [editSecondQuiz, setEditSecondQuiz] = useState('');
+  const [editFinalExam, setEditFinalExam] = useState('');
 
-  // Fetch Classes
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/dashboard/classes');
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
-        setClasses(data.data);
-      } catch (err) {
-        setError(err.message);
-        toast.error(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchInitialData();
-  }, []);
+  // Search filters
+  const [searchId, setSearchId] = useState('');
+  const [searchFirstName, setSearchFirstName] = useState('');
+  const [searchMiddleName, setSearchMiddleName] = useState('');
+  const [searchLastName, setSearchLastName] = useState('');
+  const [searchClass, setSearchClass] = useState('');
+  const [searchSemester, setSearchSemester] = useState('');
+  const [searchSubject, setSearchSubject] = useState('');
 
-  // Fetch subjects for create form
-  useEffect(() => {
-    const fetchFormSubjects = async () => {
-      if (formData.class && formData.semester) {
-        try {
-          const res = await fetch(
-            `http://localhost:3000/dashboard/subjects/by-class-semester?class=${formData.class}&semester=${formData.semester}`
-          );
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.message);
-          setSubjects(data.data || []);
-        } catch (err) {
-          toast.error(err.message);
-          setSubjects([]);
-        }
-      } else {
-        setSubjects([]);
-      }
-    };
-    fetchFormSubjects();
-  }, [formData.class, formData.semester]);
+  // 🔹 Centralized semesters
+  const semesters = [
+    { value: '1', label: 'الفصل الأول' },
+    { value: '2', label: 'الفصل الثاني' },
+  ];
 
-  // Fetch subjects for search panel
-  useEffect(() => {
-    const fetchSearchSubjects = async () => {
-      if (searchData.class && searchData.semester) {
-        try {
-          const res = await fetch(
-            `http://localhost:3000/dashboard/subjects/by-class-semester?class=${searchData.class}&semester=${searchData.semester}`
-          );
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.message);
-          setSearchSubjects(data.data || []);
-        } catch (err) {
-          toast.error(err.message);
-          setSearchSubjects([]);
-        }
-      } else {
-        setSearchSubjects([]);
-      }
-    };
-    fetchSearchSubjects();
-  }, [searchData.class, searchData.semester]);
-
-  // Fetch Marks with filters
-  const fetchMarks = async () => {
+  // Fetch classes
+  const fetchClasses = async () => {
     try {
-      const filters = {};
+      const res = await fetch("http://localhost:3000/dashboard/classes");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to fetch classes");
+      setClasses(data.data);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
-      if (searchData.id.trim() !== '') filters.id = searchData.id.trim();
-      if (searchData.class.trim() !== '') filters.class = searchData.class.trim();
-      if (searchData.semester !== '' && searchData.semester !== null && searchData.semester !== undefined)
-        filters.semester = Number(searchData.semester); // ✅ fix: ensure number
-      if (searchData.subject.trim() !== '') filters.subject = searchData.subject.trim();
-
-      if (Object.keys(filters).length === 0) {
-        toast.error('Please provide at least one filter');
-        return;
-      }
-
-      setLoading(true);
-
-      const res = await fetch('http://localhost:3000/dashboard/marks/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(filters)
-      });
-
+  // Fetch subclasses
+  const fetchSubclasses = async (className) => {
+    try {
+      const cls = classes.find(c => c.name === className);
+      if (!cls) return setSubclasses([]);
+      const res = await fetch(`http://localhost:3000/dashboard/subclasses/by-class/${cls._id}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
+      setSubclasses(data.data);
+    } catch (err) {
+      toast.error(err.message);
+      setSubclasses([]);
+    }
+  };
 
-      // ✅ Add total marks calculation client-side
-      const withTotals = (data.data || []).map(m => ({
-        ...m,
-        total: (m.firstQuiz || 0) + (m.secondQuiz || 0) + (m.finalExam || 0)
-      }));
+  // Fetch students
+  const fetchStudents = async (cls, sub) => {
+    try {
+      const clsObj = classes.find(c => c.name === cls);
+      const subObj = subclasses.find(s => s.name === sub);
+      if (!clsObj || !subObj) return;
+      const res = await fetch(
+        `http://localhost:3000/dashboard/students?classId=${clsObj._id}&subclassId=${subObj._id}`
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      setStudents(data.data || []);
+    } catch (err) {
+      toast.error(err.message);
+      setStudents([]);
+    }
+  };
 
-      setMarks(withTotals);
-      setError(null);
+  // Fetch marks
+  const fetchMarks = async (filters = {}) => {
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:3000/dashboard/marks/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(filters)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to fetch marks");
+      setMarks(data.data || []);
     } catch (err) {
       setError(err.message);
       toast.error(err.message);
@@ -137,279 +111,345 @@ const Exams = () => {
     }
   };
 
-  // Form input handlers
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  // Fetch subjects
+  const fetchSubjects = async (cls, sem) => {
+    try {
+      if (!cls || !sem) return [];
+      const res = await fetch(`http://localhost:3000/dashboard/subjects/by-class-semester?class=${cls}&semester=${sem}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      return data.data || [];
+    } catch (err) {
+      toast.error(err.message);
+      return [];
+    }
   };
 
-  const handleSearchChange = (e) => {
-    const { name, value } = e.target;
-    setSearchData(prev => ({
-      ...prev,
-      [name]: value,
-      ...(name === 'class' || name === 'semester' ? { subject: '' } : {})
-    }));
-  };
-
-  // Create Mark
+  // Submit new mark
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { id, class: className, semester, subject, firstQuiz, secondQuiz, finalExam } = formData;
-      if (!id || !className || !semester || !subject) throw new Error('All fields required');
-      const res = await fetch('http://localhost:3000/dashboard/marks', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("http://localhost:3000/dashboard/marks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id,
+          id: studentIdentifier,
           class: className,
           subject,
           firstQuiz: +firstQuiz,
           secondQuiz: +secondQuiz,
-          finalExam: +finalExam
-        })
+          finalExam: +finalExam,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      toast.success(data.message);
-      resetForm();
+      if (!res.ok) throw new Error(data.message || "Failed to save mark");
+      toast.success("Mark saved successfully");
+      
+      // Reset form
+      setStudentIdentifier('');
+      setSubject('');
+      setFirstQuiz('');
+      setSecondQuiz('');
+      setFinalExam('');
+      
+      fetchMarks();
     } catch (err) {
       toast.error(err.message);
     }
   };
 
-  // Update Mark
-  const handleUpdate = async (e) => {
+  // Update mark
+  const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!editingMark) return;
       const res = await fetch(`http://localhost:3000/dashboard/marks/${editingMark._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          firstQuiz: +formData.firstQuiz,
-          secondQuiz: +formData.secondQuiz,
-          finalExam: +formData.finalExam
-        })
+          firstQuiz: +editFirstQuiz,
+          secondQuiz: +editSecondQuiz,
+          finalExam: +editFinalExam,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      toast.success(data.message);
-      resetForm();
+      if (data.success) {
+        toast.success("Mark updated successfully");
+        setEditingMark(null);
+        fetchMarks();
+      } else {
+        toast.error(data.message || "Failed to update mark");
+      }
     } catch (err) {
-      toast.error(err.message);
+      toast.error("An error occurred during mark update");
     }
   };
 
-  // Delete Mark
+  // Delete mark
   const handleDelete = async (id) => {
     try {
-      if (!window.confirm('Are you sure?')) return;
-      const res = await fetch(`http://localhost:3000/dashboard/marks/${id}`, { method: 'DELETE' });
+      const res = await fetch(`http://localhost:3000/dashboard/marks/${id}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
-      toast.success(data.message);
+      if (data.success) {
+        toast.success("Mark deleted successfully");
+        fetchMarks();
+      } else {
+        toast.error(data.message || "Failed to delete mark");
+      }
     } catch (err) {
-      toast.error(err.message);
+      toast.error("An error occurred during mark deletion");
     }
   };
 
-  // Reset form
-  const resetForm = () => {
-    setEditingMark(null);
-    setFormData({ id: '', class: '', semester: '', subject: '', firstQuiz: '', secondQuiz: '', finalExam: '' });
+  // Handle search
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const filters = {
+      id: searchId,
+      firstName: searchFirstName,
+      middleName: searchMiddleName,
+      lastName: searchLastName,
+      class: searchClass,
+      semester: searchSemester,
+      subject: searchSubject
+    };
+    fetchMarks(filters);
   };
 
-  // Start editing
-  const startEditing = (mark) => {
-    setEditingMark(mark);
-    setFormData({
-      id: mark.studentId.identifier,
-      class: mark.subjectId.classId.name,
-      semester: String(mark.subjectId.semester), // ✅ cast to string for select
-      subject: mark.subjectId.name,
-      firstQuiz: mark.firstQuiz,
-      secondQuiz: mark.secondQuiz,
-      finalExam: mark.finalExam
-    });
+  // Clear search
+  const clearSearch = () => {
+    setSearchId('');
+    setSearchFirstName('');
+    setSearchMiddleName('');
+    setSearchLastName('');
+    setSearchClass('');
+    setSearchSemester('');
+    setSearchSubject('');
+    fetchMarks();
   };
+
+  useEffect(() => {
+    fetchClasses();
+    fetchMarks();
+  }, []);
+
+  useEffect(() => {
+    if (className) fetchSubclasses(className);
+  }, [className]);
+
+  useEffect(() => {
+    if (className && subclassName) fetchStudents(className, subclassName);
+  }, [className, subclassName]);
+
+  useEffect(() => {
+    if (className && semester) {
+      fetchSubjects(className, semester).then(setSubjects);
+    }
+  }, [className, semester]);
 
   return (
-    <div className="flex">
-      <SideBar />
-      <div className="mt-[120px] ml-10 w-full pr-10">
-        {/* Create Mark Section */}
-        <div className="section-card">
-          <h2 className="section-title">Create Mark</h2>
-          <p className="section-subtitle">Fill out all fields to add a new mark</p>
+    <>
+      <div className="flex">
+        <SideBar />
+        <main className="exams-main-container flex-1">
+          {/* Create Exam Marks Section */}
+          <section className="exams-section">
+            <header className="exams-section-header">
+              <h1 className='text-[#40277E]'>Add Exam Marks</h1>
+              <p>Please fill out the details to add new exam marks</p>
+            </header>
 
-          <form onSubmit={editingMark ? handleUpdate : handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="form-label">Student ID</label>
-              <input
-                type="text"
-                className="form-input"
-                name="id"
-                value={formData.id}
-                onChange={handleInputChange}
-                required
-                disabled={!!editingMark}
-              />
-            </div>
-
-            <div>
-              <label className="form-label">Class</label>
-              <select
-                className="form-input"
-                name="class"
-                value={formData.class}
-                onChange={handleInputChange}
-                required
-                disabled={!!editingMark}
-              >
+            <form className="exams-form" onSubmit={handleSubmit}>
+              <select value={className} onChange={(e) => setClassName(e.target.value)} required>
                 <option value="">Select Class</option>
-                {classes.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
+                {classes.map((c) => (
+                  <option key={c._id} value={c.name}>{c.name}</option>
+                ))}
               </select>
-            </div>
 
-            <div>
-              <label className="form-label">Semester</label>
-              <select
-                className="form-input"
-                name="semester"
-                value={formData.semester}
-                onChange={handleInputChange}
-                required
-                disabled={!!editingMark}
-              >
+              <select value={subclassName} onChange={(e) => setSubclassName(e.target.value)} required>
+                <option value="">Select Subclass</option>
+                {subclasses.map((s) => (
+                  <option key={s._id} value={s.name}>{s.name}</option>
+                ))}
+              </select>
+
+              <select value={studentIdentifier} onChange={(e) => setStudentIdentifier(e.target.value)} required>
+                <option value="">Select Student</option>
+                {students.map((s) => (
+                  <option key={s._id} value={s.identifier}>
+                    {s.firstName} {s.lastName} ({s.identifier})
+                  </option>
+                ))}
+              </select>
+
+              {/* Semester Dropdown */}
+              <select value={semester} onChange={(e) => setSemester(e.target.value)} required>
                 <option value="">Select Semester</option>
-                <option value={1}>الفصل الأول</option>
-                <option value={2}>الفصل الثاني</option>
+                {semesters.map((sem) => (
+                  <option key={sem.value} value={sem.value}>{sem.label}</option>
+                ))}
               </select>
-            </div>
 
-            <div>
-              <label className="form-label">Subject</label>
-              <select
-                className="form-input"
-                name="subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                required
-                disabled={!!editingMark}
-              >
+              {/* Subject Dropdown */}
+              <select value={subject} onChange={(e) => setSubject(e.target.value)} required>
                 <option value="">Select Subject</option>
-                {subjects.map(s => <option key={s._id} value={s.name}>{s.name}</option>)}
+                {subjects.map((s) => (
+                  <option key={s._id} value={s.name}>{s.name}</option>
+                ))}
               </select>
-            </div>
 
-            <div>
-              <label className="form-label">First Quiz</label>
-              <input type="number" className="form-input" name="firstQuiz" value={formData.firstQuiz} onChange={handleInputChange} required />
-            </div>
+              <input type="number" placeholder="First Quiz" value={firstQuiz} onChange={(e) => setFirstQuiz(e.target.value)} min="0" max="10" />
+              <input type="number" placeholder="Second Quiz" value={secondQuiz} onChange={(e) => setSecondQuiz(e.target.value)} min="0" max="10" />
+              <input type="number" placeholder="Final Exam" value={finalExam} onChange={(e) => setFinalExam(e.target.value)} min="0" max="80" />
 
-            <div>
-              <label className="form-label">Second Quiz</label>
-              <input type="number" className="form-input" name="secondQuiz" value={formData.secondQuiz} onChange={handleInputChange} required />
-            </div>
+              <button type="submit" className="btn-primary">Add Mark</button>
+            </form>
+          </section>
 
-            <div>
-              <label className="form-label">Final Exam</label>
-              <input type="number" className="form-input" name="finalExam" value={formData.finalExam} onChange={handleInputChange} required />
-            </div>
+          {/* Search Section */}
+          <section className="exams-section">
+            <header className="exams-section-header">
+              <h1 className='text-[#40277E]'>Search Marks</h1>
+              <p>Filter marks by different criteria</p>
+            </header>
 
-            <div className="col-span-2">
-              {editingMark ? (
-                <div className="flex gap-3">
-                  <button type="button" onClick={resetForm} className="bg-gray-400 text-white px-4 py-2 rounded-lg">Cancel</button>
-                  <button type="submit" className="action-button">Update Mark</button>
-                </div>
-              ) : (
-                <button type="submit" className="action-button">Create Mark</button>
-              )}
-            </div>
-          </form>
-        </div>
+            <form className="exams-form" onSubmit={handleSearch}>
+              <input type="text" placeholder="Student ID" value={searchId} onChange={(e) => setSearchId(e.target.value)} />
+              <input type="text" placeholder="First Name" value={searchFirstName} onChange={(e) => setSearchFirstName(e.target.value)} />
+              <input type="text" placeholder="Middle Name" value={searchMiddleName} onChange={(e) => setSearchMiddleName(e.target.value)} />
+              <input type="text" placeholder="Last Name" value={searchLastName} onChange={(e) => setSearchLastName(e.target.value)} />
 
-        {/* Marks Control Panel */}
-        <div className="section-card">
-          <h2 className="section-title">Marks Control Panel</h2>
-          <p className="section-subtitle">Search, edit, or delete marks</p>
+              <select value={searchClass} onChange={(e) => setSearchClass(e.target.value)}>
+                <option value="">Select Class</option>
+                {classes.map((c) => (
+                  <option key={c._id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
 
-          {/* Search Panel */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label className="form-label">Student ID</label>
-              <input type="text" className="form-input" name="id" value={searchData.id} onChange={handleSearchChange} />
-            </div>
+              <select value={searchSemester} onChange={(e) => setSearchSemester(e.target.value)}>
+                <option value="">Select Semester</option>
+                {semesters.map((sem) => (
+                  <option key={sem.value} value={sem.value}>{sem.label}</option>
+                ))}
+              </select>
 
-            <div className="col-span-2 flex gap-4 items-center">
-              <div className="w-1/3">
-                <label className="form-label">Class</label>
-                <select className="form-input" name="class" value={searchData.class} onChange={handleSearchChange}>
-                  <option value="">Select Class</option>
-                  {classes.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
-                </select>
+              <input type="text" placeholder="Subject" value={searchSubject} onChange={(e) => setSearchSubject(e.target.value)} />
+
+              <div className="form-actions">
+                <button type="submit" className="btn-primary">Search</button>
+                <button type="button" onClick={clearSearch} className="btn-secondary">Clear</button>
               </div>
+            </form>
+          </section>
 
-              <div className="w-1/3">
-                <label className="form-label">Semester</label>
-                <select className="form-input" name="semester" value={searchData.semester} onChange={handleSearchChange}>
-                  <option value="">Select Semester</option>
-                  <option value={1}>الفصل الأول</option>
-                  <option value={2}>الفصل الثاني</option>
-                </select>
+          {/* Marks Control Panel */}
+          <section className="exams-section">
+            <header className="exams-section-header">
+              <h1 className='text-[#40277E]'>Marks Control Panel</h1>
+              <p>Here you can view, edit, and delete marks</p>
+            </header>
+
+            {loading ? (
+              <p>Loading marks...</p>
+            ) : error ? (
+              <p className="text-error">{error}</p>
+            ) : marks.length > 0 ? (
+              <div className="marks-table-container">
+                <table className="marks-table">
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Semester</th>
+                      <th>Subject</th>
+                      <th>First Quiz</th>
+                      <th>Second Quiz</th>
+                      <th>Final Exam</th>
+                      <th>Total</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {marks.map((m) => (
+                      <tr key={m._id}>
+                        {editingMark && editingMark._id === m._id ? (
+                          <>
+                            <td colSpan="4">
+                              {m.studentId?.firstName} {m.studentId?.lastName} ({m.studentId?.identifier})
+                            </td>
+                            <td>
+                              <input 
+                                type="number" 
+                                value={editFirstQuiz} 
+                                onChange={(e) => setEditFirstQuiz(e.target.value)} 
+                              />
+                            </td>
+                            <td>
+                              <input 
+                                type="number" 
+                                value={editSecondQuiz} 
+                                onChange={(e) => setEditSecondQuiz(e.target.value)} 
+                              />
+                            </td>
+                            <td>
+                              <input 
+                                type="number" 
+                                value={editFinalExam} 
+                                onChange={(e) => setEditFinalExam(e.target.value)} 
+                              />
+                            </td>
+                            <td>{+editFirstQuiz + +editSecondQuiz + +editFinalExam}</td>
+                            <td>
+                              <div className="table-actions">
+                                <button onClick={handleUpdateSubmit} className="btn-save">Save</button>
+                                <button onClick={() => setEditingMark(null)} className="btn-cancel">Cancel</button>
+                              </div>
+                            </td>
+                          </>
+                        ) : (
+                          <>
+                            <td>{m.studentId?.firstName} {m.studentId?.lastName}</td>
+                            {/* <td>{m.subjectId?.classId?.name}</td> */}
+                            <td>
+                              {semesters.find(s => s.value === String(m.subjectId?.semester))?.label || m.subjectId?.semester}
+                            </td>
+                            <td>{m.subjectId?.name}</td>
+                            <td>{m.firstQuiz}</td>
+                            <td>{m.secondQuiz}</td>
+                            <td>{m.finalExam}</td>
+                            <td>{m.firstQuiz + m.secondQuiz + m.finalExam}</td>
+                            <td>
+                              <div className="table-actions">
+                                <button onClick={() => {
+                                  setEditingMark(m);
+                                  setEditFirstQuiz(m.firstQuiz);
+                                  setEditSecondQuiz(m.secondQuiz);
+                                  setEditFinalExam(m.finalExam);
+                                }}>
+                                  <FaUserEdit className="icon-edit" />
+                                </button>
+                                <button onClick={() => handleDelete(m._id)}>
+                                  <MdDeleteForever className="icon-delete" />
+                                </button>
+                              </div>
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-
-              <div className="w-1/3">
-                <label className="form-label">Subject</label>
-                <select className="form-input" name="subject" value={searchData.subject} onChange={handleSearchChange} disabled={!searchData.class || !searchData.semester}>
-                  <option value="">Select Subject</option>
-                  {searchSubjects.map(s => <option key={s._id} value={s.name}>{s.name}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div className="col-span-2">
-              <button className="action-button flex items-center gap-2" onClick={fetchMarks}><FaSearch /> Search</button>
-            </div>
-          </div>
-
-          {/* Marks List */}
-          {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : marks.length === 0 ? (
-            <p>No marks found.</p>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {marks.map(mark => (
-                <div key={mark._id} className="cardInfoBoard flex justify-between items-center flex-col md:flex-row gap-4">
-                  <div>
-                    <p className="font-bold">{mark.studentId?.firstName} {mark.studentId?.lastName}</p>
-                    <p className="text-sm text-gray-500">{mark.subjectId?.name} (Semester {mark.subjectId?.semester})</p>
-                  </div>
-                  <div className="flex gap-4 text-sm">
-                    <span>Q1: {mark.firstQuiz}</span>
-                    <span>Q2: {mark.secondQuiz}</span>
-                    <span>Final: {mark.finalExam}</span>
-                    <span className="font-bold text-[#40277E]">Total: {mark.total}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => startEditing(mark)}><FaEdit className="text-[#40277E] text-xl hover:scale-110 transition" /></button>
-                    <button onClick={() => handleDelete(mark._id)}><FaTrash className="text-[#FB7D5B] text-xl hover:scale-110 transition" /></button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+            ) : (
+              <p>No marks found</p>
+            )}
+          </section>
+        </main>
       </div>
 
-      <ToastContainer position="bottom-right" autoClose={4000} />
-    </div>
+      <ToastContainer position="bottom-right" autoClose={5000} />
+    </>
   );
 };
 

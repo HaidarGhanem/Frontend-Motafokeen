@@ -139,7 +139,7 @@ const Activities = () => {
     <>
       <div className="flex">
         <SideBar />
-        <main className="admin-main-container">
+        <main className="admin-main-container flex-1">
           {/* Create Activity */}
           <section className="admin-section">
             <header className="admin-section-header">

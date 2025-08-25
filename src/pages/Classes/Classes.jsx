@@ -110,7 +110,7 @@ const Classes = () => {
   return (
     <div className="flex">
       <SideBar />
-      <div className="mt-[120px] ml-10 w-full pr-10">
+      <div className="mt-[120px] ml-10 w-full pr-10 flex-1">
         {/* Create Class Section */}
         <div className="bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16 max-w-lg">
           <h2 className="text-2xl font-bold text-[#40277E] mb-2">Create Class</h2>
