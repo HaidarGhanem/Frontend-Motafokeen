@@ -192,7 +192,7 @@ const SideBar = () => {
       <div className='flex-1 overflow-y-auto'>
         <div className='LogoFrame flex justify-center items-center flex-col pt-[32px]'>
           <img src="/LogoFrame.png" alt="Logo" className='w-[50px] h-[50px]' />
-          <h1 className='text-[#FFFEFE] font-[600] text-[14px] mt-[16px]'>Al-Mutafawiqin School</h1>
+          <h1 className='text-[#FFFEFE] font-[600] text-[14px] mt-[16px]'>Al-Motafokeen School</h1>
           <p className='text-[#FFFEFE] font-[300] text-[12px] mt-[8px]'>
             {user?.role}: {user?.name}
           </p>

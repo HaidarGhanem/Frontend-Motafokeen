@@ -68,9 +68,9 @@ const Login = () => {
 
             <div className='flex flex-col justify-center items-center '>
                 <div className='bg-white w-[300px] h-[300px] img_logo flex justify-center items-center'>
-                    <img src='public/Logo.svg' className='w-[270px] h-[270px]' alt="School Logo" />
+                    <img src='/Logo.svg' className='w-[270px] h-[270px]' alt="School Logo" />
                 </div>
-                <h1 className='text-[#FFFEFE] font-[600] text-[24px] mt-[16px]'>Al-Mutafawiqin School</h1>
+                <h1 className='text-[#FFFEFE] font-[600] text-[24px] mt-[16px]'>Al-Motafokeen School</h1>
                 <p className='text-[#FFFEFE]'>Management System Dashboard</p>
             </div>
 
