@@ -18,7 +18,7 @@ const Classes = () => {
 
   const fetchClasses = async () => {
     try {
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/classes/', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/classes/', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -43,7 +43,7 @@ const Classes = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/classes', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/classes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name }),
@@ -70,7 +70,7 @@ const Classes = () => {
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/classes/${editingClass.name}`, {
+      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/classes/${editingClass.name}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: editName }),
@@ -90,7 +90,7 @@ const Classes = () => {
 
   const handleDelete = async (className) => {
     try {
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/classes', {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/classes', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: className }),
