@@ -136,6 +136,7 @@ const Exams = () => {
           id: studentIdentifier,
           class: className,
           subject,
+          semester,
           firstQuiz: +firstQuiz,
           secondQuiz: +secondQuiz,
           finalExam: +finalExam,
@@ -300,9 +301,9 @@ const Exams = () => {
                 ))}
               </select>
 
-              <input type="number" placeholder="First Quiz" value={firstQuiz} onChange={(e) => setFirstQuiz(e.target.value)} min="0" max="10" />
-              <input type="number" placeholder="Second Quiz" value={secondQuiz} onChange={(e) => setSecondQuiz(e.target.value)} min="0" max="10" />
-              <input type="number" placeholder="Final Exam" value={finalExam} onChange={(e) => setFinalExam(e.target.value)} min="0" max="80" />
+              <input type="number" placeholder="First Quiz" value={firstQuiz} onChange={(e) => setFirstQuiz(e.target.value)}  />
+              <input type="number" placeholder="Second Quiz" value={secondQuiz} onChange={(e) => setSecondQuiz(e.target.value)}  />
+              <input type="number" placeholder="Final Exam" value={finalExam} onChange={(e) => setFinalExam(e.target.value)} />
 
               <button type="submit" className="btn-primary">Add Mark</button>
             </form>
@@ -412,7 +413,7 @@ const Exams = () => {
                             <td>{m.studentId?.firstName} {m.studentId?.lastName}</td>
                             {/* <td>{m.subjectId?.classId?.name}</td> */}
                             <td>
-                              {semesters.find(s => s.value === String(m.subjectId?.semester))?.label || m.subjectId?.semester}
+                              {semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}
                             </td>
                             <td>{m.subjectId?.name}</td>
                             <td>{m.firstQuiz}</td>
