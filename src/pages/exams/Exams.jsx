@@ -136,7 +136,6 @@ const Exams = () => {
           id: studentIdentifier,
           class: className,
           subject,
-          semester,
           firstQuiz: +firstQuiz,
           secondQuiz: +secondQuiz,
           finalExam: +finalExam,
@@ -301,8 +300,8 @@ const Exams = () => {
                 ))}
               </select>
 
-              <input type="number" placeholder="First Quiz" value={firstQuiz} onChange={(e) => setFirstQuiz(e.target.value)}  />
-              <input type="number" placeholder="Second Quiz" value={secondQuiz} onChange={(e) => setSecondQuiz(e.target.value)}  />
+              <input type="number" placeholder="First Quiz" value={firstQuiz} onChange={(e) => setFirstQuiz(e.target.value)} />
+              <input type="number" placeholder="Second Quiz" value={secondQuiz} onChange={(e) => setSecondQuiz(e.target.value)} />
               <input type="number" placeholder="Final Exam" value={finalExam} onChange={(e) => setFinalExam(e.target.value)} />
 
               <button type="submit" className="btn-primary">Add Mark</button>
