@@ -10,6 +10,7 @@ const Students = () => {
   // Create form state
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
+  const [secondMiddleName, setSecondMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [selectedClass, setSelectedClass] = useState('');
@@ -43,6 +44,7 @@ const Students = () => {
   // Edit form state
   const [editFirstName, setEditFirstName] = useState('');
   const [editMiddleName, setEditMiddleName] = useState('');
+  const [editSecondMiddleName, setEditSecondMiddleName] = useState('');
   const [editLastName, setEditLastName] = useState('');
   const [editEmail, setEditEmail] = useState('');
   const [editClass, setEditClass] = useState('');
@@ -134,6 +136,7 @@ const Students = () => {
         body: JSON.stringify({
           firstName,
           middleName,
+          secondMiddleName,
           lastName,
           email,
           classId: selectedClass,
@@ -178,6 +181,7 @@ const Students = () => {
     setEditingStudent(student);
     setEditFirstName(student.firstName);
     setEditMiddleName(student.middleName || '');
+    setEditSecondMiddleName(student.secondMiddleName || '');
     setEditLastName(student.lastName);
     setEditEmail(student.email || 'motafokeen.school@gmail.com');
     setEditClass(student.classId?._id || '');
@@ -201,6 +205,7 @@ const Students = () => {
         body: JSON.stringify({
           firstName: editFirstName,
           middleName: editMiddleName,
+          secondMiddleName: editSecondMiddleName,
           lastName: editLastName,
           email: editEmail,
           classId: editClass,
@@ -276,6 +281,16 @@ const Students = () => {
                 placeholder="Middle Name"
                 value={middleName}
                 onChange={(e) => setMiddleName(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label className="form-label">2th Middle Name</label>
+              <input
+                className="form-input"
+                placeholder="2th Middle Name"
+                value={secondMiddleName}
+                onChange={(e) => setSecondMiddleName(e.target.value)}
               />
             </div>
 
@@ -542,7 +557,7 @@ const Students = () => {
               <h2 className="text-2xl font-bold text-[#40277E] mb-6">Student Details</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-800">
-                <div><strong>Full Name:</strong><p>{selectedStudent.firstName} {selectedStudent.middleName || ''} {selectedStudent.lastName}</p></div>
+                <div><strong>Full Name:</strong><p>{selectedStudent.firstName} {selectedStudent.middleName || ''} {selectedStudent.secondMiddleName || ''}  {selectedStudent.lastName}</p></div>
                 <div><strong>Identifier:</strong><p>{selectedStudent.identifier}</p></div>
                 <div><strong>Email:</strong><p>{selectedStudent.email}</p></div>
                 <div><strong>Password:</strong><p><code className="bg-gray-100 px-2 rounded">{selectedStudent.password}</code></p></div>
@@ -591,6 +606,15 @@ const Students = () => {
                     className="form-input"
                     value={editMiddleName}
                     onChange={e => setEditMiddleName(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">2th Middle Name</label>
+                  <input
+                    className="form-input"
+                    value={editSecondMiddleName}
+                    onChange={e => setEditSecondMiddleName(e.target.value)}
                   />
                 </div>
 

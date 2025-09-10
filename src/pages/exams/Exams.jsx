@@ -136,6 +136,7 @@ const Exams = () => {
           id: studentIdentifier,
           class: className,
           subject,
+          semester,
           firstQuiz: +firstQuiz,
           secondQuiz: +secondQuiz,
           finalExam: +finalExam,
@@ -412,7 +413,7 @@ const Exams = () => {
                             <td>{m.studentId?.firstName} {m.studentId?.lastName}</td>
                             {/* <td>{m.subjectId?.classId?.name}</td> */}
                             <td>
-                              {semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}
+                               {semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}
                             </td>
                             <td>{m.subjectId?.name}</td>
                             <td>{m.firstQuiz}</td>
