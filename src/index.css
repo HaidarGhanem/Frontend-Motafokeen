@@ -9,6 +9,14 @@
   font-family: "Kumbh Sans", sans-serif;
 }
 
+/* Optional: ensure all elements inherit the font */
+*,
+*::before,
+*::after {
+  font-family: inherit;
+  box-sizing: inherit;
+}
+
 body {
   background-color: #FBFBFB;
 }

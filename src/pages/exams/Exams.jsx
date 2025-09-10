@@ -254,8 +254,8 @@ const Exams = () => {
         <SideBar />
         <main className="exams-main-container flex-1">
 
-          {/* Add Marks Form */}
-          <section className="exams-section p-4 bg-white rounded-lg shadow-md mb-6">
+ {/* Add Exam Marks */}
+<section className="exams-section p-4 bg-white rounded-lg shadow-md mb-6">
   <header className="exams-section-header mb-4">
     <h1 className="text-[#40277E] text-xl font-semibold">Add Exam Marks</h1>
   </header>
@@ -263,111 +263,122 @@ const Exams = () => {
   <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
     {/* Row 1: Class, Subclass, Student, Semester, Subject */}
     <div className="flex flex-wrap gap-3">
-      <select
-        value={className}
-        onChange={(e) => setClassName(e.target.value)}
-        required
-        className="flex-1 min-w-[140px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      >
-        <option value="">Select Class</option>
-        {classes.map((c) => (
-          <option key={c._id} value={c.name}>{c.name}</option>
-        ))}
-      </select>
+      <div className="flex-1 min-w-[140px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Class</label>
+        <select
+          value={className}
+          onChange={(e) => setClassName(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        >
+          <option value="">Select Class</option>
+          {classes.map((c) => <option key={c._id} value={c.name}>{c.name}</option>)}
+        </select>
+      </div>
 
-      <select
-        value={subclassName}
-        onChange={(e) => setSubclassName(e.target.value)}
-        required
-        className="flex-1 min-w-[140px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      >
-        <option value="">Select Subclass</option>
-        {subclasses.map((s) => (
-          <option key={s._id} value={s.name}>{s.name}</option>
-        ))}
-      </select>
+      <div className="flex-1 min-w-[140px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Subclass</label>
+        <select
+          value={subclassName}
+          onChange={(e) => setSubclassName(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        >
+          <option value="">Select Subclass</option>
+          {subclasses.map((s) => <option key={s._id} value={s.name}>{s.name}</option>)}
+        </select>
+      </div>
 
-      <select
-        value={studentIdentifier}
-        onChange={(e) => setStudentIdentifier(e.target.value)}
-        required
-        className="flex-1 min-w-[180px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      >
-        <option value="">Select Student</option>
-        {students.map((s) => (
-          <option key={s._id} value={s.identifier}>
-            {s.firstName} {s.lastName} ({s.identifier})
-          </option>
-        ))}
-      </select>
+      <div className="flex-1 min-w-[180px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Student</label>
+        <select
+          value={studentIdentifier}
+          onChange={(e) => setStudentIdentifier(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        >
+          <option value="">Select Student</option>
+          {students.map((s) => (
+            <option key={s._id} value={s.identifier}>
+              {s.firstName} {s.lastName} ({s.identifier})
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <select
-        value={semester}
-        onChange={(e) => setSemester(e.target.value)}
-        required
-        className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      >
-        <option value="">Select Semester</option>
-        {semesters.map((sem) => (
-          <option key={sem.value} value={sem.value}>{sem.label}</option>
-        ))}
-      </select>
+      <div className="flex-1 min-w-[120px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Semester</label>
+        <select
+          value={semester}
+          onChange={(e) => setSemester(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        >
+          <option value="">Select Semester</option>
+          {semesters.map((sem) => <option key={sem.value} value={sem.value}>{sem.label}</option>)}
+        </select>
+      </div>
 
-      <select
-        value={subject}
-        onChange={(e) => setSubject(e.target.value)}
-        required
-        className="flex-1 min-w-[140px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      >
-        <option value="">Select Subject</option>
-        {subjects.map((s) => (
-          <option key={s._id} value={s.name}>{s.name}</option>
-        ))}
-      </select>
+      <div className="flex-1 min-w-[140px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Subject</label>
+        <select
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        >
+          <option value="">Select Subject</option>
+          {subjects.map((s) => <option key={s._id} value={s.name}>{s.name}</option>)}
+        </select>
+      </div>
     </div>
 
     {/* Row 2: Marks Inputs */}
     <div className="flex flex-wrap gap-3">
-      <input
-        type="number"
-        placeholder="Verbal (10%)"
-        value={verbal}
-        onChange={(e) => setVerbal(e.target.value)}
-        required
-        className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      />
-      <input
-        type="number"
-        placeholder="Homeworks (20%)"
-        value={homeworks}
-        onChange={(e) => setHomeworks(e.target.value)}
-        required
-        className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      />
-      <input
-        type="number"
-        placeholder="Activities (20%)"
-        value={activities}
-        onChange={(e) => setActivities(e.target.value)}
-        required
-        className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      />
-      <input
-        type="number"
-        placeholder="Quiz (20%)"
-        value={quiz}
-        onChange={(e) => setQuiz(e.target.value)}
-        required
-        className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      />
-      <input
-        type="number"
-        placeholder="Final Exam (40%)"
-        value={finalExam}
-        onChange={(e) => setFinalExam(e.target.value)}
-        required
-        className="flex-1 min-w-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-      />
+      <div className="flex-1 min-w-[120px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Verbal (10%)</label>
+        <input
+          type="number"
+          value={verbal}
+          onChange={(e) => setVerbal(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        />
+      </div>
+
+      <div className="flex-1 min-w-[120px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Homeworks (20%)</label>
+        <input
+          type="number"
+          value={homeworks}
+          onChange={(e) => setHomeworks(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        />
+      </div>
+
+      <div className="flex-1 min-w-[120px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Activities (20%)</label>
+        <input
+          type="number"
+          value={activities}
+          onChange={(e) => setActivities(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        />
+      </div>
+
+      <div className="flex-1 min-w-[120px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Quiz (20%)</label>
+        <input
+          type="number"
+          value={quiz}
+          onChange={(e) => setQuiz(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        />
+      </div>
+
+      <div className="flex-1 min-w-[120px] flex flex-col">
+        <label className="mb-1 text-gray-700 font-medium">Final Exam (40%)</label>
+        <input
+          type="number"
+          value={finalExam}
+          onChange={(e) => setFinalExam(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+        />
+      </div>
     </div>
 
     {/* Row 3: Full-width Button */}
@@ -382,68 +393,92 @@ const Exams = () => {
   </form>
 </section>
 
-
-          {/* Search Filters */}
-          <section className="exams-section search-panel p-4 bg-white rounded-lg shadow-md mb-6">
+{/* Search / Filter Marks */}
+<section className="exams-section search-panel p-4 bg-white rounded-lg shadow-md mb-6">
   <header className="exams-section-header mb-3">
     <h1 className="text-[#40277E] text-xl font-semibold">Search / Filter Marks</h1>
   </header>
+
   <form className="search-form flex flex-wrap gap-3 items-end" onSubmit={handleSearch}>
-    <input
-      type="text"
-      placeholder="ID"
-      value={searchId}
-      onChange={(e) => setSearchId(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[120px]"
-    />
-    <input
-      type="text"
-      placeholder="First Name"
-      value={searchFirstName}
-      onChange={(e) => setSearchFirstName(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[140px]"
-    />
-    <input
-      type="text"
-      placeholder="Middle Name"
-      value={searchMiddleName}
-      onChange={(e) => setSearchMiddleName(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[140px]"
-    />
-    <input
-      type="text"
-      placeholder="Last Name"
-      value={searchLastName}
-      onChange={(e) => setSearchLastName(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[140px]"
-    />
-    <select
-      value={searchClass}
-      onChange={(e) => setSearchClass(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[120px]"
-    >
-      <option value="">Class</option>
-      {classes.map((c) => <option key={c._id} value={c.name}>{c.name}</option>)}
-    </select>
-    <select
-      value={searchSemester}
-      onChange={(e) => setSearchSemester(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[120px]"
-    >
-      <option value="">Semester</option>
-      {semesters.map((sem) => <option key={sem.value} value={sem.value}>{sem.label}</option>)}
-    </select>
-    <select
-      value={searchSubject}
-      onChange={(e) => setSearchSubject(e.target.value)}
-      className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E] flex-1 min-w-[140px]"
-    >
-      <option value="">Subject</option>
-      {subjects.map((s) => <option key={s._id} value={s.name}>{s.name}</option>)}
-    </select>
+    <div className="flex flex-col flex-1 min-w-[120px]">
+      <label className="mb-1 text-gray-700 font-medium">ID</label>
+      <input
+        type="text"
+        value={searchId}
+        onChange={(e) => setSearchId(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[140px]">
+      <label className="mb-1 text-gray-700 font-medium">First Name</label>
+      <input
+        type="text"
+        value={searchFirstName}
+        onChange={(e) => setSearchFirstName(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[140px]">
+      <label className="mb-1 text-gray-700 font-medium">Middle Name</label>
+      <input
+        type="text"
+        value={searchMiddleName}
+        onChange={(e) => setSearchMiddleName(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[140px]">
+      <label className="mb-1 text-gray-700 font-medium">Last Name</label>
+      <input
+        type="text"
+        value={searchLastName}
+        onChange={(e) => setSearchLastName(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[120px]">
+      <label className="mb-1 text-gray-700 font-medium">Class</label>
+      <select
+        value={searchClass}
+        onChange={(e) => setSearchClass(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      >
+        <option value="">Class</option>
+        {classes.map((c) => <option key={c._id} value={c.name}>{c.name}</option>)}
+      </select>
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[120px]">
+      <label className="mb-1 text-gray-700 font-medium">Semester</label>
+      <select
+        value={searchSemester}
+        onChange={(e) => setSearchSemester(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      >
+        <option value="">Semester</option>
+        {semesters.map((sem) => <option key={sem.value} value={sem.value}>{sem.label}</option>)}
+      </select>
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[140px]">
+      <label className="mb-1 text-gray-700 font-medium">Subject</label>
+      <select
+        value={searchSubject}
+        onChange={(e) => setSearchSubject(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      >
+        <option value="">Subject</option>
+        {subjects.map((s) => <option key={s._id} value={s.name}>{s.name}</option>)}
+      </select>
+    </div>
+
     <button
       type="submit"
-      className="bg-[#40277E] text-white px-4 py-2 rounded-lg hover:bg-[#5937B0] flex items-center gap-1"
+      className="bg-[#40277E] text-white px-4 py-2 rounded-lg flex items-center gap-1 hover:bg-[#5937B0]"
     >
       <FaSearch /> Search
     </button>
@@ -459,86 +494,121 @@ const Exams = () => {
 
 
           {/* Marks Table */}
-          <section className="exams-section">
-            <header className="exams-section-header">
-              <h1 className='text-[#40277E]'>Marks Control Panel</h1>
-            </header>
+<section className="exams-section p-4 bg-white rounded-lg shadow-md mb-6">
+  <header className="exams-section-header mb-4">
+    <h1 className="text-[#40277E] text-xl font-semibold">Marks Control Panel</h1>
+  </header>
 
-            {loading ? <p>Loading marks...</p> : error ? <p className="text-error">{error}</p> : (
-              <div className="marks-table-container">
-                <table className="marks-table">
-                  <thead>
-                    <tr>
-                      <th>Student</th>
-                      <th>Semester</th>
-                      <th>Subject</th>
-                      <th>Verbal</th>
-                      <th>Homeworks</th>
-                      <th>Activities</th>
-                      <th>Quiz</th>
-                      <th>Final Exam</th>
-                      <th>Total (60%)</th>
-                      <th>Final Total (100%)</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {marks.length === 0 && <tr><td colSpan="11" className="text-center">No marks found</td></tr>}
-                    {marks.map((m) => (
-                      <tr key={m._id}>
-                        {editingMark && editingMark._id === m._id ? (
-                          <>
-                            <td>{m.studentId?.firstName} {m.studentId?.lastName}</td>
-                            <td>{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
-                            <td>{m.subjectId?.name}</td>
-                            <td><input type="number" value={editVerbal} onChange={(e) => setEditVerbal(e.target.value)} /></td>
-                            <td><input type="number" value={editHomeworks} onChange={(e) => setEditHomeworks(e.target.value)} /></td>
-                            <td><input type="number" value={editActivities} onChange={(e) => setEditActivities(e.target.value)} /></td>
-                            <td><input type="number" value={editQuiz} onChange={(e) => setEditQuiz(e.target.value)} /></td>
-                            <td><input type="number" value={editFinalExam} onChange={(e) => setEditFinalExam(e.target.value)} /></td>
-                            <td>{(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2).toFixed(2)}</td>
-                            <td>{(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2 + +editFinalExam*0.4).toFixed(2)}</td>
-                            <td>
-                              <div className="table-actions">
-                                <button onClick={handleUpdateSubmit} className="btn-save">Save</button>
-                                <button onClick={() => setEditingMark(null)} className="btn-cancel">Cancel</button>
-                              </div>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td>{m.studentId?.firstName} {m.studentId?.lastName}</td>
-                            <td>{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
-                            <td>{m.subjectId?.name}</td>
-                            <td>{m.verbal}</td>
-                            <td>{m.homeworks}</td>
-                            <td>{m.activities}</td>
-                            <td>{m.quiz}</td>
-                            <td>{m.finalExam}</td>
-                            <td>{m.total}</td>
-                            <td>{m.finalTotal}</td>
-                            <td>
-                              <div className="table-actions">
-                                <button onClick={() => {
-                                  setEditingMark(m);
-                                  setEditVerbal(m.verbal);
-                                  setEditHomeworks(m.homeworks);
-                                  setEditActivities(m.activities);
-                                  setEditQuiz(m.quiz);
-                                  setEditFinalExam(m.finalExam);
-                                }}><FaUserEdit className="icon-edit" /></button>
-                                <button onClick={() => handleDelete(m._id)}><MdDeleteForever className="icon-delete" /></button>
-                              </div>
-                            </td>
-                          </>
-                        )}
-                      </tr>
+  {loading ? (
+    <p>Loading marks...</p>
+  ) : error ? (
+    <p className="text-red-500">{error}</p>
+  ) : (
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-sm text-left">
+        <thead className="bg-gray-100">
+          <tr>
+            {['Student', 'Semester', 'Subject', 'Verbal', 'Homeworks', 'Activities', 'Quiz', 'Final Exam', 'Total (60%)', 'Final Total (100%)', 'Result', 'Actions'].map((th, idx) => (
+              <th key={idx} className="px-4 py-3 text-left font-medium text-gray-700">{th}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {marks.length === 0 && (
+            <tr>
+              <td colSpan="12" className="text-center py-6 text-gray-400">
+                No marks found
+              </td>
+            </tr>
+          )}
+
+          {marks.map((m, index) => {
+            const resultColor =
+              m.result === 'passed' ? 'bg-green-500' :
+              m.result === 'failed' ? 'bg-red-500' :
+              'bg-gray-400';
+
+            return (
+              <tr key={m._id} className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} h-14`}>
+                {editingMark && editingMark._id === m._id ? (
+                  <>
+                    <td className="px-4 py-2">{m.studentId?.firstName} {m.studentId?.lastName}</td>
+                    <td className="px-4 py-2">{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
+                    <td className="px-4 py-2">{m.subjectId?.name}</td>
+                    {['Verbal', 'Homeworks', 'Activities', 'Quiz', 'Final Exam'].map((field, i) => (
+                      <td key={i} className="px-2 py-2 text-center">
+                        <input
+                          type="number"
+                          value={
+                            field === 'Verbal' ? editVerbal :
+                            field === 'Homeworks' ? editHomeworks :
+                            field === 'Activities' ? editActivities :
+                            field === 'Quiz' ? editQuiz :
+                            editFinalExam
+                          }
+                          onChange={(e) => {
+                            if(field==='Verbal') setEditVerbal(e.target.value)
+                            else if(field==='Homeworks') setEditHomeworks(e.target.value)
+                            else if(field==='Activities') setEditActivities(e.target.value)
+                            else if(field==='Quiz') setEditQuiz(e.target.value)
+                            else setEditFinalExam(e.target.value)
+                          }}
+                          className="w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#40277E]"
+                        />
+                      </td>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
+                    <td className="px-2 py-2 text-center">
+                      {(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2).toFixed(2)}
+                    </td>
+                    <td className="px-2 py-2 text-center">
+                      {(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2 + +editFinalExam*0.4).toFixed(2)}
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <span className={`inline-block w-3 h-3 rounded-full ${resultColor}`}></span>
+                    </td>
+                    <td className="px-4 py-2 text-center flex justify-center gap-2">
+                      <button onClick={handleUpdateSubmit} className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Save</button>
+                      <button onClick={() => setEditingMark(null)} className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 transition">Cancel</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="px-4 py-2">{m.studentId?.firstName} {m.studentId?.lastName}</td>
+                    <td className="px-4 py-2">{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
+                    <td className="px-4 py-2">{m.subjectId?.name}</td>
+                    <td className="px-2 py-2 text-center">{m.verbal}</td>
+                    <td className="px-2 py-2 text-center">{m.homeworks}</td>
+                    <td className="px-2 py-2 text-center">{m.activities}</td>
+                    <td className="px-2 py-2 text-center">{m.quiz}</td>
+                    <td className="px-2 py-2 text-center">{m.finalExam}</td>
+                    <td className="px-2 py-2 text-center">{m.total}</td>
+                    <td className="px-2 py-2 text-center">{m.finalTotal}</td>
+                    <td className="px-4 py-2 text-center">
+                      <span className={`inline-block w-3 h-3 rounded-full ${resultColor}`}></span>
+                    </td>
+                    <td className="px-4 py-2 text-center flex justify-center gap-2">
+                      <button onClick={() => {
+                        setEditingMark(m);
+                        setEditVerbal(m.verbal);
+                        setEditHomeworks(m.homeworks);
+                        setEditActivities(m.activities);
+                        setEditQuiz(m.quiz);
+                        setEditFinalExam(m.finalExam);
+                      }} className="text-blue-600 hover:text-blue-800 transition"><FaUserEdit /></button>
+                      <button onClick={() => handleDelete(m._id)} className="text-red-600 hover:text-red-800 transition"><MdDeleteForever /></button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )}
+</section>
+
+
         </main>
       </div>
       <ToastContainer position="bottom-right" autoClose={5000} />
