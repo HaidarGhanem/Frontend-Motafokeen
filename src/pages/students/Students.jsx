@@ -154,7 +154,7 @@ const Students = () => {
       if (data.success) {
         toast.success('تم إنشاء سجل الطالب بنجاح');
         // Reset form
-        setFirstName(''); setMiddleName(''); setLastName('');
+        setFirstName(''); setMiddleName(''); setSecondMiddleName(''); setLastName('');
         setEmail(''); setSelectedClass(''); setSelectedSubclass('');
         setSelectedYear(''); setGender(''); setNationality('');
         setCity(''); setBirthDate(''); setFatherName(''); setMotherName('');
