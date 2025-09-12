@@ -341,7 +341,7 @@ const Exams = () => {
       </div>
 
       <div className="flex-1 min-w-[120px] flex flex-col">
-        <label className="mb-1 text-gray-700 font-medium">Homeworks (20%)</label>
+        <label className="mb-1 text-gray-700 font-medium">Homeworks (10%)</label>
         <input
           type="number"
           value={homeworks}
