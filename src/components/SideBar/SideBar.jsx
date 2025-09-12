@@ -17,6 +17,7 @@ import { FiActivity } from "react-icons/fi";
 import { BsCalendarEvent } from "react-icons/bs";
 import { SiGoogleclassroom } from "react-icons/si";
 import { GrCertificate } from "react-icons/gr";
+import { IoIosNotifications } from "react-icons/io";
 
 const SideBar = () => {
   const [activeBtn, setActiveBtn] = useState('dashboard');
@@ -124,6 +125,13 @@ const SideBar = () => {
       path: '/dashboard/exams',
       roles: ['owner', 'admin']
     },
+    // {
+    //   id: 'notifications',
+    //   icon: <IoIosNotifications className='w-[18px]'/>,
+    //   text: 'Notifications',
+    //   path: '/dashboard/notifications',
+    //   roles: ['owner', 'admin']
+    // },
     {
       id: 'absence',
       icon: <LiaClipboardListSolid className='w-[18px]'/>,

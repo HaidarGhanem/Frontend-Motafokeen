@@ -19,6 +19,7 @@ import Olympic from './pages/Olympic/Olympic';
 import Web from './pages/Web/Web';
 import Cert from './pages/Cert/Cert';
 import Employees from './pages/Employees/Employees';
+import Notifications from './pages/Notify/Notifications';
 
 function App() {
     return (
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/dashboard/olympiad" element={<Olympic />} />
                 <Route path="/dashboard/website-posts" element={<Web />} />
                 <Route path="/dashboard/cert" element={<Cert />} />
+                {/* <Route path="/dashboard/notifications" element={<Notifications />} /> */}
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
