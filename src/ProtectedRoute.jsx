@@ -6,42 +6,46 @@ const ProtectedRoute = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        setIsAuthenticated(false);
+        return;
+      }
+
+      // Optional: verify session with backend
       try {
         const response = await fetch(
           'https://backend-motafokeen-ajrd.onrender.com/dashboard/auth/session',
           {
-            credentials: 'include', // Important: send cookies
+            credentials: 'include',
+            headers: {
+              'Authorization': `Bearer ${token}`, // fallback to token
+            },
           }
         );
 
         if (response.ok) {
-          const data = await response.json();
-          // Optionally store user data in localStorage
-          if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
           setIsAuthenticated(true);
         } else {
+          // If session invalid, log out
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           setIsAuthenticated(false);
         }
       } catch (error) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setIsAuthenticated(false);
+        // If fetch fails, fallback to token
+        setIsAuthenticated(!!token);
       }
     };
 
-    checkSession();
-  }, []); // Run only on mount, not dependent on token
+    checkAuth();
+  }, []);
 
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>; // Or a spinner
-  }
+  if (isAuthenticated === null) return <div>Loading...</div>;
 
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/" replace />;
 
   return <Outlet />;
 };
