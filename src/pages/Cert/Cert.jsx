@@ -24,7 +24,7 @@ const Cert = () => {
   // ---------- Fetch Classes ----------
   const fetchClasses = async () => {
     try {
-      const res = await fetch("https://backend-motafokeen-ajrd.onrender.com/dashboard/classes");
+      const res = await fetch("/dashboard/classes");
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch classes");
       setClasses(data.data);
@@ -33,11 +33,12 @@ const Cert = () => {
     }
   };
 
+  // ---------- Fetch Subclasses ----------
   const fetchSubclasses = async (className) => {
     try {
       const cls = classes.find(c => c.name === className);
       if (!cls) return setSubclasses([]);
-      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/by-class/${cls._id}`);
+      const res = await fetch(`/dashboard/subclasses/by-class/${cls._id}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setSubclasses(data.data);
@@ -47,14 +48,13 @@ const Cert = () => {
     }
   };
 
+  // ---------- Fetch Students ----------
   const fetchStudents = async (cls, sub) => {
     try {
       const clsObj = classes.find(c => c.name === cls);
       const subObj = subclasses.find(s => s.name === sub);
       if (!clsObj || !subObj) return;
-      const res = await fetch(
-        `https://backend-motafokeen-ajrd.onrender.com/dashboard/students?classId=${clsObj._id}&subclassId=${subObj._id}`
-      );
+      const res = await fetch(`/dashboard/students?classId=${clsObj._id}&subclassId=${subObj._id}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       setStudents(data.data || []);
@@ -66,9 +66,9 @@ const Cert = () => {
 
   // ---------- Fetch Upload History ----------
   const fetchUploadHistory = async (studentId) => {
-    if (!studentId) return;
+    if (!studentId) return setUploadHistory([]);
     try {
-      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/certifications/${studentId}/history`);
+      const res = await fetch(`/certifications/${studentId}/history`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch history");
       setUploadHistory(data.data || []);
@@ -94,114 +94,83 @@ const Cert = () => {
     }
   };
 
-  // ---------- Upload Handling ----------
+  // ---------- Upload Certificate ----------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!studentIdentifier) {
-      toast.error('Student is required', { position: 'bottom-right', autoClose: 5000 });
+      toast.error('Student is required');
       return;
     }
-
     if (!file) {
-      toast.error('Please select a PDF file to upload', { position: 'bottom-right', autoClose: 5000 });
+      toast.error('Please select a PDF file to upload');
       return;
     }
 
     setLoading(true);
-
     try {
       const formData = new FormData();
       formData.append('certificate', file);
       formData.append('id', studentIdentifier);
 
-      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/certifications/upload', {
+      const response = await fetch('/certifications/upload', {
         method: 'POST',
         body: formData,
       });
 
       const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to upload certificate');
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to upload certificate');
-      }
+      toast.success(data.message || 'Certificate uploaded successfully');
 
-      if (data.success) {
-        toast.success(data.message, { position: 'bottom-right', autoClose: 5000 });
-        
-        // refresh upload history after upload
-        fetchUploadHistory(studentIdentifier);
+      // Refresh history
+      fetchUploadHistory(studentIdentifier);
 
-        // Reset form
-        setClassName('');
-        setSubclassName('');
-        setStudentIdentifier('');
-        setFile(null);
-        setFileName('');
-        setFilePreview(null);
-        document.getElementById('file-upload').value = '';
-      } else {
-        throw new Error(data.message || 'Failed to upload certificate');
-      }
+      // Reset form
+      setClassName('');
+      setSubclassName('');
+      setStudentIdentifier('');
+      setFile(null);
+      setFileName('');
+      setFilePreview(null);
+      document.getElementById('file-upload').value = '';
     } catch (err) {
       console.error('Upload error:', err);
-      toast.error(err.message || 'An error occurred during upload', { position: 'bottom-right', autoClose: 5000 });
+      toast.error(err.message || 'Error uploading certificate');
     } finally {
       setLoading(false);
     }
   };
 
   // ---------- Delete Certificate ----------
-  const handleDelete = async (studentId, fileName) => {
+  const handleDelete = async (studentId) => {
+    if (!window.confirm('Are you sure you want to delete this certificate?')) return;
+
     try {
-      const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/certifications/${studentId}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to delete certificate');
-      }
-
-      if (data.success) {
-        toast.success(data.message, { position: 'bottom-right', autoClose: 5000 });
-        // Refresh the upload history
-        fetchUploadHistory(studentIdentifier);
-      } else {
-        throw new Error(data.message || 'Failed to delete certificate');
-      }
+      const res = await fetch(`/certifications/${studentId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to delete certificate');
+      toast.success(data.message || 'Certificate deleted successfully');
+      fetchUploadHistory(studentIdentifier);
     } catch (err) {
       console.error('Delete error:', err);
-      toast.error(err.message || 'An error occurred during deletion', { position: 'bottom-right', autoClose: 5000 });
+      toast.error(err.message || 'Error deleting certificate');
     }
   };
 
   // ---------- Hooks ----------
-  useEffect(() => {
-    fetchClasses();
-  }, []);
-
-  useEffect(() => {
-    if (className) fetchSubclasses(className);
-  }, [className]);
-
-  useEffect(() => {
-    if (className && subclassName) fetchStudents(className, subclassName);
-  }, [className, subclassName]);
-
-  // Fetch history whenever a student is selected
-  useEffect(() => {
-    fetchUploadHistory(studentIdentifier);
-  }, [studentIdentifier]);
+  useEffect(() => fetchClasses(), []);
+  useEffect(() => { if (className) fetchSubclasses(className); }, [className]);
+  useEffect(() => { if (className && subclassName) fetchStudents(className, subclassName); }, [className, subclassName]);
+  useEffect(() => { fetchUploadHistory(studentIdentifier); }, [studentIdentifier]);
 
   return (
     <div className="flex">
       <SideBar />
       <main className="flex-1 mt-[120px] ml-10 w-full pr-10 flex flex-col gap-20">
 
-        {/* Upload Certificate Header */}
-        <section className="flex flex-col gap-2 items-start">
+        {/* Upload Header */}
+        <section className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold text-[#40277E]">Upload Certificate</h1>
           <span className="text-sm text-[#383838]">Upload PDF certificates for students</span>
         </section>
@@ -209,45 +178,31 @@ const Cert = () => {
         {/* Upload Form */}
         <section className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {/* Class, Subclass, Student */}
             <div className="flex flex-wrap gap-4">
+              {/* Class */}
               <div className="flex-1 min-w-[160px] flex flex-col">
                 <label className="form-label">Class:</label>
-                <select
-                  value={className}
-                  onChange={(e) => setClassName(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-                >
+                <select value={className} onChange={e => setClassName(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg">
                   <option value="">Select Class</option>
-                  {classes.map((c) => <option key={c._id} value={c.name}>{c.name}</option>)}
+                  {classes.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
                 </select>
               </div>
 
+              {/* Subclass */}
               <div className="flex-1 min-w-[160px] flex flex-col">
                 <label className="form-label">Subclass:</label>
-                <select
-                  value={subclassName}
-                  onChange={(e) => setSubclassName(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-                >
+                <select value={subclassName} onChange={e => setSubclassName(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg">
                   <option value="">Select Subclass</option>
-                  {subclasses.map((s) => <option key={s._id} value={s.name}>{s.name}</option>)}
+                  {subclasses.map(s => <option key={s._id} value={s.name}>{s.name}</option>)}
                 </select>
               </div>
 
+              {/* Student */}
               <div className="flex-1 min-w-[200px] flex flex-col">
                 <label className="form-label">Student:</label>
-                <select
-                  value={studentIdentifier}
-                  onChange={(e) => setStudentIdentifier(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
-                >
+                <select value={studentIdentifier} onChange={e => setStudentIdentifier(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg">
                   <option value="">Select Student</option>
-                  {students.map((s) => (
-                    <option key={s._id} value={s.identifier}>
-                      {s.firstName} {s.lastName} ({s.identifier})
-                    </option>
-                  ))}
+                  {students.map(s => <option key={s._id} value={s.identifier}>{s.firstName} {s.lastName} ({s.identifier})</option>)}
                 </select>
               </div>
             </div>
@@ -256,73 +211,21 @@ const Cert = () => {
             <div className="flex flex-col gap-2 w-full">
               <label htmlFor="file-upload" className="form-label">PDF Certificate (Max 50MB):</label>
               <div className="flex items-center gap-4">
-                <label
-                  htmlFor="file-upload"
-                  className="cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg 
-                             bg-gradient-to-r from-[#40277E] to-[#6B4EFF] text-white 
-                             font-semibold shadow-md transition-all duration-300 
-                             hover:scale-105 hover:shadow-lg"
-                >
-                  <MdCloudUpload size={22} />
-                  Choose File
-                  <input
-                    id="file-upload"
-                    type="file"
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    required
-                  />
+                <label htmlFor="file-upload" className="cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-[#40277E] to-[#6B4EFF] text-white font-semibold shadow-md">
+                  <MdCloudUpload size={22} /> Choose File
+                  <input id="file-upload" type="file" accept="application/pdf" onChange={handleFileChange} className="hidden" required />
                 </label>
-                {fileName && (
-                  <span className="file-name flex items-center gap-2 bg-[#fbe9e6] text-[#bf4a3f] px-3 py-1 rounded-lg font-medium text-sm shadow-inner select-text">
-                    <FaFilePdf size={16} />
-                    {fileName}
-                  </span>
-                )}
+                {fileName && <span className="file-name flex items-center gap-2 bg-[#fbe9e6] text-[#bf4a3f] px-3 py-1 rounded-lg font-medium text-sm shadow-inner select-text">
+                  <FaFilePdf size={16} /> {fileName}
+                </span>}
               </div>
 
-              {/* PDF Preview */}
-              {filePreview && (
-                <iframe
-                  src={filePreview}
-                  className="mt-4 w-full h-96 border rounded-lg shadow"
-                  title="PDF Preview"
-                ></iframe>
-              )}
+              {filePreview && <iframe src={filePreview} className="mt-4 w-full h-96 border rounded-lg shadow" title="PDF Preview"></iframe>}
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`self-start flex items-center gap-2 px-6 py-2 rounded-lg 
-                         bg-[#40277E] text-white font-semibold shadow-md transition-all duration-300
-                         hover:bg-[#6B4EFF] hover:scale-105
-                         ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {loading && (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              )}
+            {/* Submit */}
+            <button type="submit" disabled={loading} className={`self-start flex items-center gap-2 px-6 py-2 rounded-lg bg-[#40277E] text-white font-semibold shadow-md hover:bg-[#6B4EFF] ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              {loading && <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>}
               {loading ? 'Uploading...' : 'Upload'}
             </button>
           </form>
@@ -338,10 +241,7 @@ const Cert = () => {
           {uploadHistory.length > 0 ? (
             <div className="flex flex-col gap-4">
               {uploadHistory.map((item, index) => (
-                <div
-                  key={index}
-                  className="card flex justify-between items-center cursor-default p-4 rounded-lg shadow-sm border"
-                >
+                <div key={index} className="card flex justify-between items-center cursor-default p-4 rounded-lg shadow-sm border">
                   <div className="flex items-center gap-6">
                     <FaFilePdf className="text-red-600 text-[40px]" />
                     <div className="flex flex-col">
@@ -351,30 +251,17 @@ const Cert = () => {
                     </div>
                   </div>
                   <div className="flex gap-6 items-center">
-                    <a
-                      href={item.previewUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm"
-                    >
-                      View
-                    </a>
-                    <button
-                      onClick={() => handleDelete(item.studentId, item.fileName)}
-                      className="text-[#40277E] hover:text-[#e06d50] flex items-center gap-1 text-sm border-none bg-transparent cursor-pointer"
-                      aria-label="Delete certificate"
-                    >
-                      <MdDelete size={18} />
-                      Delete
+                    <a href={item.previewUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 text-sm">View</a>
+                    <button onClick={() => handleDelete(item.studentId)} className="text-[#40277E] hover:text-[#e06d50] flex items-center gap-1 text-sm border-none bg-transparent cursor-pointer">
+                      <MdDelete size={18} /> Delete
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="text-gray-500">No upload history yet</p>
-          )}
+          ) : <p className="text-gray-500">No upload history yet</p>}
         </section>
+
       </main>
 
       <ToastContainer position="bottom-right" autoClose={5000} />
