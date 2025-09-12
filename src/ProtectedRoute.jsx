@@ -1,49 +1,46 @@
-// src/ProtectedRoute.jsx
 import { Navigate, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 const ProtectedRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-      if (!token) {
-        setIsAuthenticated(false);
-        return;
-      }
+    if (!token) {
+      setAuthChecked(true);
+      setIsAuthenticated(false);
+      return;
+    }
 
-      // Optional: verify session with backend
+    const checkToken = async () => {
       try {
-        const response = await fetch(
+        const res = await fetch(
           'https://backend-motafokeen-ajrd.onrender.com/dashboard/auth/session',
           {
-            credentials: 'include',
-            headers: {
-              'Authorization': `Bearer ${token}`, // fallback to token
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        if (response.ok) {
-          setIsAuthenticated(true);
-        } else {
-          // If session invalid, log out
+        if (res.ok) setIsAuthenticated(true);
+        else {
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           setIsAuthenticated(false);
         }
-      } catch (error) {
-        // If fetch fails, fallback to token
-        setIsAuthenticated(!!token);
+      } catch {
+        setIsAuthenticated(false);
+      } finally {
+        setAuthChecked(true); // Important: mark check as finished
       }
     };
 
-    checkAuth();
+    checkToken();
   }, []);
 
-  if (isAuthenticated === null) return <div>Loading...</div>;
+  // Show a loading screen **until auth is checked**
+  if (!authChecked) return <div>Loading...</div>;
 
   if (!isAuthenticated) return <Navigate to="/" replace />;
 
