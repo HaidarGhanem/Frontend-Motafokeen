@@ -24,7 +24,7 @@ function App() {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
-            {/* <Route element={<ProtectedRoute />}> */}
+            <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/dashboard/admins" element={<Admins />} />
                 <Route path="/dashboard/teachers" element={<Teachers />} />
@@ -42,7 +42,7 @@ function App() {
                 <Route path="/dashboard/olympiad" element={<Olympic />} />
                 <Route path="/dashboard/website-posts" element={<Web />} />
                 <Route path="/dashboard/cert" element={<Cert />} />
-            {/* </Route> */}
+            </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );
