@@ -20,6 +20,7 @@ const Subjects = () => {
   const [editClass, setEditClass] = useState('');
   const [classes, setClasses] = useState([]);
   const [selectedClassFilter, setSelectedClassFilter] = useState('');
+  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState('');
 
   const semesters = [
     { value: '1', label: 'الفصل الأول' },
@@ -38,6 +39,26 @@ const Subjects = () => {
       }
     } catch (err) {
       toast.error('Failed to fetch classes');
+    }
+  };
+
+  // Always fetch all subjects from the server, then apply filters client-side
+  const fetchSubjects = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects');
+      const data = await response.json();
+      if (data.success) {
+        setAllSubjects(data.data || []);
+      } else {
+        throw new Error(data.message || 'Failed to fetch subjects');
+      }
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,27 +85,6 @@ const Subjects = () => {
     }
   };
 
-  const fetchSubjects = async () => {
-    try {
-      let url = 'https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects';
-      if (selectedClassFilter) {
-        url += `?class=${selectedClassFilter}`;
-      }
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.success) {
-        setAllSubjects(data.data);
-      } else {
-        throw new Error(data.message || 'Failed to fetch subjects');
-      }
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleUpdate = (subject) => {
     setEditingSubject(subject);
     setEditName(subject.name);
@@ -93,7 +93,9 @@ const Subjects = () => {
   };
 
   const handleUpdateSubmit = async (e) => {
-    e.preventDefault();
+    // e may be the click event or submit event
+    if (e && e.preventDefault) e.preventDefault();
+    if (!editingSubject) return;
     try {
       const response = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subjects/${editingSubject._id}`, {
         method: 'PUT',
@@ -131,15 +133,26 @@ const Subjects = () => {
     }
   };
 
+  // Fetch once on mount. Filters are applied client-side so changing them doesn't re-fetch.
   useEffect(() => {
     fetchClasses();
     fetchSubjects();
-  }, [selectedClassFilter]);
+  }, []);
+
+  // derive filtered list locally (type-safe comparisons)
+  const filteredSubjects = (allSubjects || []).filter(subject => {
+    const matchesClass = selectedClassFilter ? (subject.classId?.name === selectedClassFilter) : true;
+    // subject.semester might be number or string in returned data => string-compare safely
+    const matchesSemester = selectedSemesterFilter ? (String(subject.semester) === String(selectedSemesterFilter)) : true;
+    return matchesClass && matchesSemester;
+  });
 
   return (
     <div className='flex'>
       <SideBar />
       <div className='mt-[120px] ml-10 w-full pr-10 flex-1'>
+        
+        {/* Create Subject */}
         <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16'>
           <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Create Subject</h2>
           <p className='text-sm text-[#666] mb-6'>Fill all fields to create a new subject</p>
@@ -168,56 +181,88 @@ const Subjects = () => {
           </form>
         </div>
 
+        {/* Subjects Control */}
         <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md'>
           <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Subjects Control Panel</h2>
           <p className='text-sm text-[#666] mb-6'>Manage, Edit, or Delete subjects</p>
-          <div className='mb-6'>
-            <label className='form-label mr-4'>Filter by Class</label>
-            <select className='form-input w-[200px]' value={selectedClassFilter} onChange={(e) => setSelectedClassFilter(e.target.value)}>
-              <option value=''>All Classes</option>
-              {classes.map(cls => (<option key={cls._id} value={cls.name}>{cls.name}</option>))}
-            </select>
+
+          {/* Filters */}
+          <div className='mb-6 flex flex-wrap gap-6'>
+            <div>
+              <label className='form-label mr-4'>Filter by Class</label>
+              <select className='form-input w-[200px]' value={selectedClassFilter} onChange={(e) => setSelectedClassFilter(e.target.value)}>
+                <option value=''>All Classes</option>
+                {classes.map(cls => (<option key={cls._id} value={cls.name}>{cls.name}</option>))}
+              </select>
+            </div>
+            <div>
+              <label className='form-label mr-4'>Filter by Semester</label>
+              <select className='form-input w-[200px]' value={selectedSemesterFilter} onChange={(e) => setSelectedSemesterFilter(e.target.value)}>
+                <option value=''>All Semesters</option>
+                {semesters.map(sem => (<option key={sem.value} value={sem.value}>{sem.label}</option>))}
+              </select>
+            </div>
           </div>
+
+          {/* Subjects Table */}
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
             <p className='text-red-600'>{error}</p>
           ) : (
-            <div className='flex flex-col gap-4'>
-              {allSubjects?.map(subject => (
-                <div key={subject._id} className='bg-white border border-[#E6E6E6] p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center'>
-                  {editingSubject && editingSubject._id === subject._id ? (
-                    <form onSubmit={handleUpdateSubmit} className='grid grid-cols-1 md:grid-cols-2 gap-4 w-full'>
-                      <input className='form-input' type='text' value={editName} onChange={(e) => setEditName(e.target.value)} required />
-                      <select className='form-input' value={editSemester} onChange={(e) => setEditSemester(e.target.value)} required>
-                        {semesters.map(sem => (<option key={sem.value} value={sem.value}>{sem.label}</option>))}
-                      </select>
-                      <select className='form-input' value={editClass} onChange={(e) => setEditClass(e.target.value)} required>
-                        {classes.map(cls => (<option key={cls._id} value={cls.name}>{cls.name}</option>))}
-                      </select>
-                      <div className='col-span-2 flex gap-2'>
-                        <button type='submit' className='bg-green-500 hover:bg-green-600 text-white px-4 py-1 rounded'>Save</button>
-                        <button type='button' onClick={() => setEditingSubject(null)} className='bg-gray-400 hover:bg-gray-500 text-white px-4 py-1 rounded'>Cancel</button>
-                      </div>
-                    </form>
-                  ) : (
-                    <div className='w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
-                      <div className='flex items-center gap-4'>
-                        <FaBook className='text-[#6A46A8] text-3xl' />
-                        <div className='text-sm text-[#333]'>
-                          <p><strong>Name:</strong> {subject.name}</p>
-                          <p><strong>Semester:</strong> {subject.semester}</p>
-                          <p><strong>Class:</strong> {subject.classId?.name || 'N/A'}</p>
-                        </div>
-                      </div>
-                      <div className='flex gap-2'>
-                        <button onClick={() => handleUpdate(subject)}><FaEdit className='text-[#40277E] text-xl hover:scale-110 transition' /></button>
-                        <button onClick={() => handleDelete(subject._id)}><MdDeleteForever className='text-[#FB7D5B] text-xl hover:scale-110 transition' /></button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+            <div className='overflow-x-auto'>
+              <div className='mb-3 text-sm text-gray-600'>Showing {filteredSubjects.length} of {allSubjects?.length || 0} subjects</div>
+              <table className='w-full border border-gray-200 text-sm rounded-lg'>
+                <thead className='bg-[#40277E] text-white'>
+                  <tr>
+                    <th className='p-3 text-left'>Name</th>
+                    <th className='p-3 text-left'>Semester</th>
+                    <th className='p-3 text-left'>Class</th>
+                    <th className='p-3 text-center'>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredSubjects.map(subject => (
+                    <tr key={subject._id} className='border-b hover:bg-gray-50 transition'>
+                      {editingSubject && editingSubject._id === subject._id ? (
+                        <>
+                          <td className='p-3'>
+                            <input className='form-input' value={editName} onChange={(e) => setEditName(e.target.value)} />
+                          </td>
+                          <td className='p-3'>
+                            <select className='form-input' value={editSemester} onChange={(e) => setEditSemester(e.target.value)}>
+                              {semesters.map(sem => (<option key={sem.value} value={sem.value}>{sem.label}</option>))}
+                            </select>
+                          </td>
+                          <td className='p-3'>
+                            <select className='form-input' value={editClass} onChange={(e) => setEditClass(e.target.value)}>
+                              {classes.map(cls => (<option key={cls._id} value={cls.name}>{cls.name}</option>))}
+                            </select>
+                          </td>
+                          <td className='p-3 flex justify-center gap-2'>
+                            <button onClick={handleUpdateSubmit} className='bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600'>Save</button>
+                            <button onClick={() => setEditingSubject(null)} className='bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500'>Cancel</button>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td className='p-3 flex items-center gap-2'><FaBook className='text-[#6A46A8]' /> {subject.name}</td>
+                          <td className='p-3'>{subject.semester}</td>
+                          <td className='p-3'>{subject.classId?.name || 'N/A'}</td>
+                          <td className='p-3 flex justify-center gap-4'>
+                            <button onClick={() => handleUpdate(subject)}><FaEdit className='text-[#40277E] text-lg hover:scale-110 transition' /></button>
+                            <button onClick={() => handleDelete(subject._id)}><MdDeleteForever className='text-[#FB7D5B] text-lg hover:scale-110 transition' /></button>
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {filteredSubjects.length === 0 && (
+                <div className='mt-4 text-center text-gray-600'>No subjects match the selected filters.</div>
+              )}
             </div>
           )}
         </div>
