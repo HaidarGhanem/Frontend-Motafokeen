@@ -36,8 +36,9 @@ const Login = () => {
             if (data.token && data.user) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('tokenExpiry', Date.now() + 72 * 60 * 60 * 1000);
                 navigate('/dashboard');
-            } else {
+}            else {
                 toast.error(data.message || 'Login failed', {
                     position: "top-right",
                     autoClose: 3000,

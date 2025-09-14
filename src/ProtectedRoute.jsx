@@ -5,42 +5,36 @@ const ProtectedRoute = () => {
   const [authState, setAuthState] = useState('checking'); // 'checking', 'authenticated', 'unauthenticated'
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      const user = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
 
-      if (!token || !user) {
-        setAuthState('unauthenticated');
-        return;
-      }
+    if (!token || !user) {
+      setAuthState('unauthenticated');
+      return;
+    }
 
-      try {
-        const res = await fetch(
-          'https://backend-motafokeen-ajrd.onrender.com/dashboard/auth/session',
-          {
-            headers: { 
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-          }
-        );
+    // Optimistically set as authenticated
+    setAuthState('authenticated');
 
-        if (res.ok) {
-          setAuthState('authenticated');
-        } else {
+    // Optional: background token validation
+    fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/auth/session', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(res => {
+        if (!res.ok) {
+          // Token invalid -> log out
           localStorage.removeItem('token');
           localStorage.removeItem('user');
           setAuthState('unauthenticated');
         }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setAuthState('unauthenticated');
-      }
-    };
-
-    checkAuth();
+      })
+      .catch(err => {
+        console.error('Token validation failed:', err);
+        // Keep user logged in temporarily
+      });
   }, []);
 
   if (authState === 'checking') {
