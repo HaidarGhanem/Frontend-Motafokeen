@@ -47,6 +47,7 @@ const Exams = () => {
   const [searchClass, setSearchClass] = useState('');
   const [searchSemester, setSearchSemester] = useState('');
   const [searchSubject, setSearchSubject] = useState('');
+  const [searchSubclass, setSearchSubclass] = useState('');
 
   const semesters = [
     { value: '1', label: 'الفصل الأول' },
@@ -148,7 +149,7 @@ const Exams = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to save mark");
-      toast.success("Mark saved successfully");
+      toast.success("تم حفظ العلامة بنجاح");
 
       setStudentIdentifier('');
       setSubject('');
@@ -180,7 +181,7 @@ const Exams = () => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Mark updated successfully");
+        toast.success("تم تعديل العلامة بنجاح");
         setEditingMark(null);
         fetchMarks();
       } else {
@@ -198,7 +199,7 @@ const Exams = () => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success("Mark deleted successfully");
+        toast.success("تم حذف العلامة بنجاح");
         fetchMarks();
       } else {
         toast.error(data.message || "Failed to delete mark");
@@ -216,6 +217,7 @@ const Exams = () => {
       middleName: searchMiddleName,
       lastName: searchLastName,
       class: searchClass,
+      subclass: searchSubclass,
       semester: searchSemester,
       subject: searchSubject
     };
@@ -231,6 +233,7 @@ const Exams = () => {
     setSearchSemester('');
     setSearchSubject('');
     fetchMarks();
+    setSearchSubclass('');
   };
 
   useEffect(() => {
@@ -251,6 +254,41 @@ const Exams = () => {
       fetchSubjects(className, semester).then(setSubjects);
     }
   }, [className, semester]);
+
+  // Update subclasses for filter form
+useEffect(() => {
+  const fetchFilterSubclasses = async () => {
+    if (!searchClass) return setSubclasses([]);
+    const cls = classes.find(c => c.name === searchClass);
+    if (!cls) return setSubclasses([]);
+    try {
+      const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/subclasses/by-class/${cls._id}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      setSubclasses(data.data || []);
+    } catch (err) {
+      toast.error(err.message);
+      setSubclasses([]);
+    }
+  };
+  fetchFilterSubclasses();
+  setSearchSubclass(''); // reset subclass when class changes
+}, [searchClass, classes]);
+
+// Update subjects for filter form
+useEffect(() => {
+  const fetchFilterSubjects = async () => {
+    if (!searchClass || !searchSemester) return setSubjects([]);
+    try {
+      const data = await fetchSubjects(searchClass, searchSemester);
+      setSubjects(data);
+    } catch (err) {
+      setSubjects([]);
+    }
+  };
+  fetchFilterSubjects();
+  setSearchSubject(''); // reset subject when class/semester changes
+}, [searchClass, searchSemester]);
 
   
   // Pagination helpers
@@ -463,6 +501,20 @@ const Exams = () => {
       >
         <option value="">Class</option>
         {classes.map((c) => <option key={c._id} value={c.name}>{c.name}</option>)}
+      </select>
+    </div>
+
+    <div className="flex flex-col flex-1 min-w-[140px]">
+      <label className="mb-1 text-gray-700 font-medium">Subclass</label>
+      <select
+        value={searchSubclass}
+        onChange={(e) => setSearchSubclass(e.target.value)}
+        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      >
+        <option value="">Select Subclass</option>
+        {subclasses.map((s) => (
+          <option key={s._id} value={s.name}>{s.name}</option>
+        ))}
       </select>
     </div>
 
