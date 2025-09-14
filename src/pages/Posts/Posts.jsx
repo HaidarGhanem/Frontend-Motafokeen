@@ -274,128 +274,131 @@ const Posts = () => {
                         <p className="text-red-500 py-4">{error}</p>
                     ) : allPosts && allPosts.length > 0 ? (
                         <div className="space-y-6">
-                            {allPosts.map((post) => (
-                                <div key={post._id} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-                                    {editingPost && editingPost._id === post._id ? (
-                                        <form onSubmit={handleUpdateSubmit} className="p-6">
-                                            <div className="flex items-start gap-6">
-                                                <div className="flex-shrink-0">
-                                                    <FaBlog className="text-5xl text-indigo-600 mt-1" />
-                                                </div>
-                                                <div className="flex-1 space-y-4">
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                        <div className="space-y-2">
-                                                            <label className="text-sm font-medium text-gray-700">Title</label>
-                                                            <input
-                                                                className="w-full p-2 border border-gray-300 rounded"
-                                                                type="text"
-                                                                value={editTitle}
-                                                                onChange={(e) => setEditTitle(e.target.value)}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-sm font-medium text-gray-700">Writer</label>
-                                                            <input
-                                                                className="w-full p-2 border border-gray-300 rounded"
-                                                                type="text"
-                                                                value={editWriter}
-                                                                onChange={(e) => setEditWriter(e.target.value)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <label className="text-sm font-medium text-gray-700">Content</label>
-                                                        <textarea
-                                                            className="w-full p-2 border border-gray-300 rounded min-h-[100px]"
-                                                            value={editContent}
-                                                            onChange={(e) => setEditContent(e.target.value)}
-                                                            required
-                                                        />
-                                                    </div>
-                                                    <div className="space-y-2">
-                                                        <label className="text-sm font-medium text-gray-700">Image</label>
-                                                        <label className="flex items-center justify-between p-2 border border-gray-300 rounded cursor-pointer hover:bg-gray-50">
-                                                            <div className="flex items-center">
-                                                                <FiImage className="mr-2 text-gray-500" />
-                                                                <span className={editImage ? "text-gray-800" : "text-gray-500"}>
-                                                                    {editImage ? editImage.name : 'Change image (optional)'}
-                                                                </span>
-                                                            </div>
-                                                            <span className="text-sm text-orange-500">Browse</span>
-                                                            <input
-                                                                id="edit-image"
-                                                                type="file"
-                                                                accept="image/*"
-                                                                onChange={handleEditImageChange}
-                                                                className="hidden"
-                                                            />
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="flex justify-end gap-3 mt-4">
-                                                <button 
-                                                    type="button" 
-                                                    onClick={resetEditForm}
-                                                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors"
-                                                >
-                                                    Cancel
-                                                </button>
-                                                <button 
-                                                    type="submit"
-                                                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-                                                >
-                                                    Save Changes
-                                                </button>
-                                            </div>
-                                        </form>
-                                    ) : (
-                                        <div className="p-6">
-                                            <div className="flex items-start gap-6">
-                                                <div className="flex-shrink-0">
-                                                    <FaBlog className="text-5xl text-indigo-600" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <div className="flex justify-between items-start">
-                                                        <div>
-                                                            <h3 className="text-xl font-bold text-gray-800">{post.title}</h3>
-                                                            <p className="text-sm text-gray-500 mt-1">By: {post.writer}</p>
-                                                        </div>
-                                                        <div className="flex gap-2">
-                                                            <button 
-                                                                onClick={() => handleUpdate(post)}
-                                                                className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full"
-                                                            >
-                                                                <FaEdit size={18} />
-                                                            </button>
-                                                            <button 
-                                                                onClick={() => handleDelete(post._id)}
-                                                                className="p-2 text-orange-500 hover:bg-orange-50 rounded-full"
-                                                            >
-                                                                <MdDeleteForever size={20} />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <p className="mt-3 text-gray-700 whitespace-pre-line">{post.content}</p>
-                                                    {post.image && (
-                                                        <div className="mt-4">
-                                                            <img 
-                                                                src={`https://backend-motafokeen-ajrd.onrender.com/dashboard/posts/${post._id}/image`} 
-                                                                alt="Post" 
-                                                                className="max-w-full h-auto max-h-60 rounded-lg"
-                                                            />
-                                                        </div>
-                                                    )}
-                                                    <div className="mt-4 text-xs text-gray-400">
-                                                        {new Date(post.createdAt).toLocaleString()}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                           {allPosts.map((post) => (
+  <div 
+    key={post._id} 
+    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+  >
+    {editingPost && editingPost._id === post._id ? (
+      // EDIT FORM
+      <form onSubmit={handleUpdateSubmit} className="p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-gray-700">Title</label>
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              required
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-semibold text-gray-700">Writer</label>
+            <input
+              type="text"
+              value={editWriter}
+              onChange={(e) => setEditWriter(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+          </div>
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-gray-700">Content</label>
+          <textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            required
+            className="w-full p-3 border border-gray-300 rounded-lg min-h-[120px] focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-sm font-semibold text-gray-700">Image</label>
+          <label className="flex items-center justify-between p-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+            <div className="flex items-center">
+              <FiImage className="mr-2 text-gray-500" />
+              <span className={editImage ? "text-gray-800" : "text-gray-500"}>
+                {editImage ? editImage.name : 'Change image (optional)'}
+              </span>
+            </div>
+            <span className="text-sm text-indigo-600">Browse</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleEditImageChange}
+              className="hidden"
+            />
+          </label>
+        </div>
+        <div className="flex justify-end gap-3 mt-4">
+          <button 
+            type="button" 
+            onClick={resetEditForm}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit"
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    ) : (
+      // DISPLAY POST
+      <div className="flex flex-col md:flex-row p-6 gap-6">
+        <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center bg-indigo-50 rounded-xl">
+          <FaBlog className="text-3xl text-indigo-600" />
+        </div>
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="text-xl font-bold text-gray-800">{post.title}</h3>
+              <p className="text-sm text-gray-500 mt-1">By {post.writer}</p>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => handleUpdate(post)}
+                className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-full transition"
+                title="Edit"
+              >
+                <FaEdit size={18} />
+              </button>
+              <button 
+                onClick={() => handleDelete(post._id)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded-full transition"
+                title="Delete"
+              >
+                <MdDeleteForever size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Content */}
+          <p className="mt-3 text-gray-700 whitespace-pre-line">{post.content}</p>
+
+          {/* Image */}
+          {post.image && (
+            <div className="mt-4">
+              <img
+                src={`https://backend-motafokeen-ajrd.onrender.com/dashboard/posts/${post._id}/image`}
+                alt="Post"
+                className="w-full h-auto max-h-64 rounded-lg object-cover border border-gray-200"
+              />
+            </div>
+          )}
+
+          {/* Timestamp */}
+          <div className="mt-3 text-xs text-gray-400">{new Date(post.createdAt).toLocaleString()}</div>
+        </div>
+      </div>
+    )}
+  </div>
+))}
+
                         </div>
                     ) : (
                         <div className="flex justify-center items-center py-8">
