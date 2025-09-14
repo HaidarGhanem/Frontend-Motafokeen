@@ -15,6 +15,10 @@ const Exams = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+
+
   // Form fields
   const [className, setClassName] = useState('');
   const [subclassName, setSubclassName] = useState('');
@@ -247,6 +251,16 @@ const Exams = () => {
       fetchSubjects(className, semester).then(setSubjects);
     }
   }, [className, semester]);
+
+  
+  // Pagination helpers
+  const totalPages = Math.ceil(marks.length / rowsPerPage);
+  const paginatedMarks = marks.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+  };
 
   return (
     <>
@@ -493,7 +507,7 @@ const Exams = () => {
 </section>
 
 
-          {/* Marks Table */}
+{/* Marks Table with Pagination */}
 <section className="exams-section p-4 bg-white rounded-lg shadow-md mb-6">
   <header className="exams-section-header mb-4">
     <h1 className="text-[#40277E] text-xl font-semibold">Marks Control Panel</h1>
@@ -504,110 +518,134 @@ const Exams = () => {
   ) : error ? (
     <p className="text-red-500">{error}</p>
   ) : (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-sm text-left">
-        <thead className="bg-gray-100">
-          <tr>
-            {['Student', 'Semester', 'Subject', 'Verbal', 'Homeworks', 'Activities', 'Quiz', 'Final Exam', 'Total (60%)', 'Final Total (100%)', 'Result', 'Actions'].map((th, idx) => (
-              <th key={idx} className="px-4 py-3 text-left font-medium text-gray-700">{th}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {marks.length === 0 && (
+    <>
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-left">
+          <thead className="bg-gray-100">
             <tr>
-              <td colSpan="12" className="text-center py-6 text-gray-400">
-                No marks found
-              </td>
+              {['Student', 'Semester', 'Subject', 'Verbal', 'Homeworks', 'Activities', 'Quiz', 'Final Exam', 'Total (60%)', 'Final Total (100%)', 'Result', 'Actions'].map((th, idx) => (
+                <th key={idx} className="px-4 py-3 text-left font-medium text-gray-700">{th}</th>
+              ))}
             </tr>
-          )}
-
-          {marks.map((m, index) => {
-            const resultColor =
-              m.result === 'passed' ? 'bg-green-500' :
-              m.result === 'failed' ? 'bg-red-500' :
-              'bg-gray-400';
-
-            return (
-              <tr key={m._id} className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} h-14`}>
-                {editingMark && editingMark._id === m._id ? (
-                  <>
-                    <td className="px-4 py-2">{m.studentId?.firstName} {m.studentId?.lastName}</td>
-                    <td className="px-4 py-2">{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
-                    <td className="px-4 py-2">{m.subjectId?.name}</td>
-                    {['Verbal', 'Homeworks', 'Activities', 'Quiz', 'Final Exam'].map((field, i) => (
-                      <td key={i} className="px-2 py-2 text-center">
-                        <input
-                          type="number"
-                          value={
-                            field === 'Verbal' ? editVerbal :
-                            field === 'Homeworks' ? editHomeworks :
-                            field === 'Activities' ? editActivities :
-                            field === 'Quiz' ? editQuiz :
-                            editFinalExam
-                          }
-                          onChange={(e) => {
-                            if(field==='Verbal') setEditVerbal(e.target.value)
-                            else if(field==='Homeworks') setEditHomeworks(e.target.value)
-                            else if(field==='Activities') setEditActivities(e.target.value)
-                            else if(field==='Quiz') setEditQuiz(e.target.value)
-                            else setEditFinalExam(e.target.value)
-                          }}
-                          className="w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#40277E]"
-                        />
-                      </td>
-                    ))}
-                    <td className="px-2 py-2 text-center">
-                      {(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2).toFixed(2)}
-                    </td>
-                    <td className="px-2 py-2 text-center">
-                      {(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2 + +editFinalExam*0.4).toFixed(2)}
-                    </td>
-                    <td className="px-4 py-2 text-center">
-                      <span className={`inline-block w-3 h-3 rounded-full ${resultColor}`}></span>
-                    </td>
-                    <td className="px-4 py-2 text-center flex justify-center gap-2">
-                      <button onClick={handleUpdateSubmit} className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Save</button>
-                      <button onClick={() => setEditingMark(null)} className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 transition">Cancel</button>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className="px-4 py-2">{m.studentId?.firstName} {m.studentId?.lastName}</td>
-                    <td className="px-4 py-2">{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
-                    <td className="px-4 py-2">{m.subjectId?.name}</td>
-                    <td className="px-2 py-2 text-center">{m.verbal}</td>
-                    <td className="px-2 py-2 text-center">{m.homeworks}</td>
-                    <td className="px-2 py-2 text-center">{m.activities}</td>
-                    <td className="px-2 py-2 text-center">{m.quiz}</td>
-                    <td className="px-2 py-2 text-center">{m.finalExam}</td>
-                    <td className="px-2 py-2 text-center">{m.total}</td>
-                    <td className="px-2 py-2 text-center">{m.finalTotal}</td>
-                    <td className="px-4 py-2 text-center">
-                      <span className={`inline-block w-3 h-3 rounded-full ${resultColor}`}></span>
-                    </td>
-                    <td className="px-4 py-2 text-center flex justify-center gap-2">
-                      <button onClick={() => {
-                        setEditingMark(m);
-                        setEditVerbal(m.verbal);
-                        setEditHomeworks(m.homeworks);
-                        setEditActivities(m.activities);
-                        setEditQuiz(m.quiz);
-                        setEditFinalExam(m.finalExam);
-                      }} className="text-blue-600 hover:text-blue-800 transition"><FaUserEdit /></button>
-                      <button onClick={() => handleDelete(m._id)} className="text-red-600 hover:text-red-800 transition"><MdDeleteForever /></button>
-                    </td>
-                  </>
-                )}
+          </thead>
+          <tbody>
+            {paginatedMarks.length === 0 && (
+              <tr>
+                <td colSpan="12" className="text-center py-6 text-gray-400">
+                  No marks found
+                </td>
               </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+            )}
+
+            {paginatedMarks.map((m, index) => {
+              const resultColor =
+                m.result === 'passed' ? 'bg-green-500' :
+                m.result === 'failed' ? 'bg-red-500' :
+                'bg-gray-400';
+
+              return (
+                <tr key={m._id} className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} h-14`}>
+                  {editingMark && editingMark._id === m._id ? (
+                    <>
+                      <td className="px-4 py-2">{m.studentId?.firstName} {m.studentId?.lastName}</td>
+                      <td className="px-4 py-2">{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
+                      <td className="px-4 py-2">{m.subjectId?.name}</td>
+                      {['Verbal', 'Homeworks', 'Activities', 'Quiz', 'Final Exam'].map((field, i) => (
+                        <td key={i} className="px-2 py-2 text-center">
+                          <input
+                            type="number"
+                            value={
+                              field === 'Verbal' ? editVerbal :
+                              field === 'Homeworks' ? editHomeworks :
+                              field === 'Activities' ? editActivities :
+                              field === 'Quiz' ? editQuiz :
+                              editFinalExam
+                            }
+                            onChange={(e) => {
+                              if(field==='Verbal') setEditVerbal(e.target.value)
+                              else if(field==='Homeworks') setEditHomeworks(e.target.value)
+                              else if(field==='Activities') setEditActivities(e.target.value)
+                              else if(field==='Quiz') setEditQuiz(e.target.value)
+                              else setEditFinalExam(e.target.value)
+                            }}
+                            className="w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-[#40277E]"
+                          />
+                        </td>
+                      ))}
+                      <td className="px-2 py-2 text-center">{(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2).toFixed(2)}</td>
+                      <td className="px-2 py-2 text-center">{(+editVerbal*0.1 + +editHomeworks*0.2 + +editActivities*0.2 + +editQuiz*0.2 + +editFinalExam*0.4).toFixed(2)}</td>
+                      <td className="px-4 py-2 text-center">
+                        <span className={`inline-block w-3 h-3 rounded-full ${resultColor}`}></span>
+                      </td>
+                      <td className="px-4 pt-2 text-center flex items-center justify-center gap-2">
+                        <button onClick={handleUpdateSubmit} className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition">Save</button>
+                        <button onClick={() => setEditingMark(null)} className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 transition">Cancel</button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-4 py-2">{m.studentId?.firstName} {m.studentId?.lastName}</td>
+                      <td className="px-4 py-2">{semesters.find(s => s.value == m.subjectId?.semester)?.label || m.subjectId?.semester}</td>
+                      <td className="px-4 py-2">{m.subjectId?.name}</td>
+                      <td className="px-2 py-2 text-center">{m.verbal}</td>
+                      <td className="px-2 py-2 text-center">{m.homeworks}</td>
+                      <td className="px-2 py-2 text-center">{m.activities}</td>
+                      <td className="px-2 py-2 text-center">{m.quiz}</td>
+                      <td className="px-2 py-2 text-center">{m.finalExam}</td>
+                      <td className="px-2 py-2 text-center">{m.total}</td>
+                      <td className="px-2 py-2 text-center">{m.finalTotal}</td>
+                      <td className="px-4 py-2 text-center">
+                        <span className={`inline-block w-3 h-3 rounded-full ${resultColor}`}></span>
+                      </td>
+                      <td className="px-4 py-5 text-center flex items-center justify-center gap-2">
+                        <button onClick={() => {
+                          setEditingMark(m);
+                          setEditVerbal(m.verbal);
+                          setEditHomeworks(m.homeworks);
+                          setEditActivities(m.activities);
+                          setEditQuiz(m.quiz);
+                          setEditFinalExam(m.finalExam);
+                        }} className="text-blue-600 hover:text-blue-800 transition"><FaUserEdit /></button>
+                        <button onClick={() => handleDelete(m._id)} className="text-red-600 hover:text-red-800 transition"><MdDeleteForever /></button>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+            disabled={currentPage === 1}
+          >Prev</button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-[#40277E] text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
+            disabled={currentPage === totalPages}
+          >Next</button>
+        </div>
+      )}
+    </>
   )}
 </section>
-
 
         </main>
       </div>

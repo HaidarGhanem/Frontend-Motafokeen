@@ -22,6 +22,9 @@ const Subjects = () => {
   const [selectedClassFilter, setSelectedClassFilter] = useState('');
   const [selectedSemesterFilter, setSelectedSemesterFilter] = useState('');
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 18;
+
   const semesters = [
     { value: '1', label: 'الفصل الأول' },
     { value: '2', label: 'الفصل الثاني' }
@@ -42,7 +45,6 @@ const Subjects = () => {
     }
   };
 
-  // Always fetch all subjects from the server, then apply filters client-side
   const fetchSubjects = async () => {
     setLoading(true);
     setError(null);
@@ -93,7 +95,6 @@ const Subjects = () => {
   };
 
   const handleUpdateSubmit = async (e) => {
-    // e may be the click event or submit event
     if (e && e.preventDefault) e.preventDefault();
     if (!editingSubject) return;
     try {
@@ -133,25 +134,32 @@ const Subjects = () => {
     }
   };
 
-  // Fetch once on mount. Filters are applied client-side so changing them doesn't re-fetch.
   useEffect(() => {
     fetchClasses();
     fetchSubjects();
   }, []);
 
-  // derive filtered list locally (type-safe comparisons)
   const filteredSubjects = (allSubjects || []).filter(subject => {
     const matchesClass = selectedClassFilter ? (subject.classId?.name === selectedClassFilter) : true;
-    // subject.semester might be number or string in returned data => string-compare safely
     const matchesSemester = selectedSemesterFilter ? (String(subject.semester) === String(selectedSemesterFilter)) : true;
     return matchesClass && matchesSemester;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredSubjects.length / rowsPerPage);
+  const paginatedSubjects = filteredSubjects.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <div className='flex'>
       <SideBar />
       <div className='mt-[120px] ml-10 w-full pr-10 flex-1'>
-        
+
         {/* Create Subject */}
         <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16'>
           <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Create Subject</h2>
@@ -190,14 +198,14 @@ const Subjects = () => {
           <div className='mb-6 flex flex-wrap gap-6'>
             <div>
               <label className='form-label mr-4'>Filter by Class</label>
-              <select className='form-input w-[200px]' value={selectedClassFilter} onChange={(e) => setSelectedClassFilter(e.target.value)}>
+              <select className='form-input w-[200px]' value={selectedClassFilter} onChange={(e) => { setSelectedClassFilter(e.target.value); setCurrentPage(1); }}>
                 <option value=''>All Classes</option>
                 {classes.map(cls => (<option key={cls._id} value={cls.name}>{cls.name}</option>))}
               </select>
             </div>
             <div>
               <label className='form-label mr-4'>Filter by Semester</label>
-              <select className='form-input w-[200px]' value={selectedSemesterFilter} onChange={(e) => setSelectedSemesterFilter(e.target.value)}>
+              <select className='form-input w-[200px]' value={selectedSemesterFilter} onChange={(e) => { setSelectedSemesterFilter(e.target.value); setCurrentPage(1); }}>
                 <option value=''>All Semesters</option>
                 {semesters.map(sem => (<option key={sem.value} value={sem.value}>{sem.label}</option>))}
               </select>
@@ -211,7 +219,7 @@ const Subjects = () => {
             <p className='text-red-600'>{error}</p>
           ) : (
             <div className='overflow-x-auto'>
-              <div className='mb-3 text-sm text-gray-600'>Showing {filteredSubjects.length} of {allSubjects?.length || 0} subjects</div>
+              <div className='mb-3 text-sm text-gray-600'>Showing {paginatedSubjects.length} of {filteredSubjects.length} filtered subjects ({allSubjects?.length || 0} total)</div>
               <table className='w-full border border-gray-200 text-sm rounded-lg'>
                 <thead className='bg-[#40277E] text-white'>
                   <tr>
@@ -222,7 +230,7 @@ const Subjects = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredSubjects.map(subject => (
+                  {paginatedSubjects.map(subject => (
                     <tr key={subject._id} className='border-b hover:bg-gray-50 transition'>
                       {editingSubject && editingSubject._id === subject._id ? (
                         <>
@@ -259,6 +267,17 @@ const Subjects = () => {
                   ))}
                 </tbody>
               </table>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className='mt-4 flex justify-center items-center gap-3'>
+                  <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50'>Prev</button>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button key={i} onClick={() => handlePageChange(i + 1)} className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-[#40277E] text-white' : 'bg-gray-200 hover:bg-gray-300'}`}>{i + 1}</button>
+                  ))}
+                  <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='px-3 py-1 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50'>Next</button>
+                </div>
+              )}
 
               {filteredSubjects.length === 0 && (
                 <div className='mt-4 text-center text-gray-600'>No subjects match the selected filters.</div>

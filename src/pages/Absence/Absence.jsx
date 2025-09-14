@@ -17,6 +17,10 @@ const Absence = () => {
   const [subclasses, setSubclasses] = useState([]);
   const [filteredSubclasses, setFilteredSubclasses] = useState([]);
 
+  // NEW STATE for summary
+  const [attendanceSummary, setAttendanceSummary] = useState([]);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+
   const fetchOptions = async () => {
     try {
       const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/students/options');
@@ -65,26 +69,59 @@ const Absence = () => {
     }
   };
 
+  // NEW: Fetch attendance summary
+  const fetchSummary = async () => {
+    if (!selectedSubclass) return;
+    setLoadingSummary(true);
+    try {
+      const subclassObj = subclasses.find(s => s._id === selectedSubclass);
+      const classObj = classes.find(c => c._id === selectedClass);
+      if (!subclassObj || !classObj) throw new Error('Invalid class or subclass selection');
+
+      const response = await fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/absence/subclass-attendance-summary', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ class: classObj.name, subclass: subclassObj.name, date })
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || 'Failed to fetch attendance summary');
+
+      setAttendanceSummary(data.data);
+    } catch (err) {
+      toast.error(`Error fetching summary: ${err.message}`);
+    } finally {
+      setLoadingSummary(false);
+    }
+  };
+
   useEffect(() => {
     if (selectedClass) {
       const selectedClassObj = classes.find(c => c._id === selectedClass);
       setFilteredSubclasses(selectedClassObj?.subclasses || []);
       setSelectedSubclass('');
       setAllStudents([]);
+      setAttendanceSummary([]);
     } else {
       setFilteredSubclasses([]);
       setSelectedSubclass('');
       setAllStudents([]);
+      setAttendanceSummary([]);
     }
   }, [selectedClass, classes]);
 
   useEffect(() => {
     if (selectedSubclass) {
       fetchStudents();
+      fetchSummary(); // also fetch summary when subclass changes
     } else {
       setAllStudents([]);
+      setAttendanceSummary([]);
     }
-  }, [selectedSubclass]);
+  }, [selectedSubclass, date]);
 
   useEffect(() => {
     fetchOptions();
@@ -124,6 +161,7 @@ const Absence = () => {
       setDescription('');
       setAbsentStudents([]);
       setAllStudents([]);
+      setAttendanceSummary([]);
     } catch (err) {
       toast.error(`Error: ${err.message}`);
     }
@@ -137,6 +175,7 @@ const Absence = () => {
     <div className='flex'>
       <SideBar />
       <div className='mt-[120px] ml-10 w-full pr-10 flex-1'>
+        {/* Attendance Form */}
         <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16'>
           <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Mark Attendance</h2>
           <p className='text-sm text-[#666] mb-6'>Select class and subclass to mark student attendance</p>
@@ -169,8 +208,9 @@ const Absence = () => {
           </form>
         </div>
 
+        {/* Student List */}
         {selectedSubclass && (
-          <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md'>
+          <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md mb-16'>
             <h2 className='text-2xl font-bold text-[#40277E] mb-2'>Students List</h2>
             <p className='text-sm text-[#666] mb-6'>Mark students as absent or present</p>
             {loading ? (
@@ -204,6 +244,43 @@ const Absence = () => {
               </div>
             ) : (
               <p>No students found in this subclass</p>
+            )}
+          </div>
+        )}
+
+        {/* Attendance Summary Table */}
+        {selectedSubclass && (
+          <div className='bg-[#FAF9FC] p-8 rounded-xl shadow-md'>
+            <h2 className='text-2xl font-bold text-[#40277E] mb-4'>Attendance Summary</h2>
+            {loadingSummary ? (
+              <p>Loading summary...</p>
+            ) : attendanceSummary.length > 0 ? (
+              <div className='overflow-x-auto'>
+                <table className='w-full border-collapse rounded-lg overflow-hidden'>
+                  <thead className='bg-[#40277E] text-white'>
+                    <tr>
+                      <th className='px-4 py-3 text-center'>Student ID</th>
+                      <th className='px-4 py-3 text-center'>Name</th>
+                      <th className='px-4 py-3 text-center'>Today</th>
+                      <th className='px-4 py-3 text-center'>Total Absences</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {attendanceSummary.map((student) => (
+                      <tr key={student.studentId} className='border-b hover:bg-gray-100'>
+                        <td className='px-4 py-3 text-center'>{student.identifier}</td>
+                        <td className='px-4 py-3 text-center'>{student.name}</td>
+                        <td className={`text-center px-4 py-3 font-semibold ${student.todayStatus === 'absent' ? 'text-red-600' : 'text-green-600'}`}>
+                          {student.todayStatus.charAt(0).toUpperCase() + student.todayStatus.slice(1)}
+                        </td>
+                        <td className='px-4 py-3 text-center'>{student.totalAbsences}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p>No summary available for this date.</p>
             )}
           </div>
         )}
