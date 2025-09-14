@@ -7,34 +7,42 @@ const ProtectedRoute = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
+    const tokenExpiry = localStorage.getItem('tokenExpiry');
 
     if (!token || !user) {
       setAuthState('unauthenticated');
       return;
     }
 
-    // Optimistically set as authenticated
+    // Check token expiry
+    if (tokenExpiry && Date.now() > parseInt(tokenExpiry)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('tokenExpiry');
+      setAuthState('unauthenticated');
+      return;
+    }
+
+    // Token exists and not expired → consider authenticated
     setAuthState('authenticated');
 
-    // Optional: background token validation
+    // Optional: validate token in background
     fetch('https://backend-motafokeen-ajrd.onrender.com/dashboard/auth/session', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
-      },
-    })
-      .then(res => {
-        if (!res.ok) {
-          // Token invalid -> log out
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setAuthState('unauthenticated');
-        }
-      })
-      .catch(err => {
-        console.error('Token validation failed:', err);
-        // Keep user logged in temporarily
-      });
+      }
+    }).then(res => {
+      if (!res.ok) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('tokenExpiry');
+        setAuthState('unauthenticated');
+      }
+    }).catch(err => {
+      console.error('Token validation failed:', err);
+    });
+
   }, []);
 
   if (authState === 'checking') {
