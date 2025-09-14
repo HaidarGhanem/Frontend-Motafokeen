@@ -62,9 +62,8 @@ const Dashboard = () => {
                 method: "PUT"
             });
             const data = await res.json();
-            
             if (data.success) {
-                setPromotionMessage(`Promotion successful! ✅ Promoted: ${data.promotedCount}, Skipped: ${data.skippedCount}`);
+                setPromotionMessage(`تم بنجاح ترقية الطلاب الناجحين إلى الصف التالي : ${data.promotedCount}`);
                 // Refresh the promotion report after promotion
                 await handleShowReport();
             } else {
@@ -88,7 +87,7 @@ const Dashboard = () => {
             const data = await res.json();
             
             if (data.success) {
-                setPromotionMessage(`Reset successful! ✅ Reset for ${data.modifiedCount} students`);
+                setPromotionMessage(`تم بنجاح إعادة ضبط المواد الراسبة`);
                 // Refresh the promotion report after reset
                 await handleShowReport();
             } else {
@@ -111,7 +110,7 @@ const Dashboard = () => {
             
             if (data.success) {
                 setPromotionReport(data.data);
-                setPromotionMessage(`Report loaded successfully! Found ${data.data.length} students`);
+                setPromotionMessage(`تم بنجاح توليد تقرير الترقية`);
             } else {
                 setPromotionMessage(`Error: ${data.message}`);
             }

@@ -100,11 +100,11 @@ const Cert = () => {
     e.preventDefault();
 
     if (!studentIdentifier) {
-      toast.error('Student is required');
+      toast.error('حقل الطالب مطلوب');
       return;
     }
     if (!file) {
-      toast.error('Please select a PDF file to upload');
+      toast.error('خطأ في رفع الملف');
       return;
     }
 
@@ -121,7 +121,7 @@ const Cert = () => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to upload certificate');
 
-      toast.success(data.message || 'Certificate uploaded successfully');
+      toast.success("تم رفع الشهادة بنجاح");
       fetchUploadHistory(studentIdentifier);
 
       // Reset form

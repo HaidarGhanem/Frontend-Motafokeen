@@ -56,7 +56,7 @@ const Activities = () => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(data.message);
+        toast.success("تم إنشاء النشاط بنجاح");
         setTitle(''); setContent(''); setType(''); setStartDate(''); setEndDate('');
         fetchActivities();
       } else toast.error(data.message);
@@ -82,7 +82,7 @@ const Activities = () => {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success(data.message);
+        toast.success("تم تعديل النشاط بنجاح");
         setEditingActivity(null);
         fetchActivities();
       } else toast.error(data.message);
@@ -94,7 +94,7 @@ const Activities = () => {
       const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
-        toast.success(data.message);
+        toast.success("تم حذف النشاط بنجاح");
         fetchActivities();
       } else toast.error(data.message);
     } catch { toast.error('An error occurred while deleting activity'); }

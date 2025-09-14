@@ -82,7 +82,7 @@ const Olympic = () => {
         }),
       });
       if (!res.ok) throw new Error((await res.json()).message || 'Failed to create record');
-      toast.success('Olympic record created successfully!');
+      toast.success('تم إنشاء سجل الأولومبياد بنجاح');
       resetForm();
       fetchOlympics();
     } catch (err) {
@@ -120,7 +120,7 @@ const Olympic = () => {
         }),
       });
       if (!res.ok) throw new Error('Failed to update record');
-      toast.success('Olympic record updated!');
+      toast.success('تم تعديل سجل الأولومبياد بنجاح');
       setEditingOlympic(null);
       fetchOlympics();
     } catch (err) {
@@ -132,7 +132,7 @@ const Olympic = () => {
     try {
       const res = await fetch(`https://backend-motafokeen-ajrd.onrender.com/dashboard/olympics/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete record');
-      toast.success('Record deleted');
+      toast.success('تم حذف سجل الأولومبياد بنجاح');
       fetchOlympics();
     } catch (err) {
       toast.error(err.message);

@@ -154,7 +154,7 @@ const Absence = () => {
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || 'Attendance marking failed');
 
-      toast.success('Attendance marked successfully!');
+      toast.success('تم تسجيل الحضور بنجاح');
       setSelectedClass('');
       setSelectedSubclass('');
       setDate(new Date().toISOString().split('T')[0]);
