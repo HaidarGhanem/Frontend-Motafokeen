@@ -141,41 +141,89 @@ const Activities = () => {
         <SideBar />
         <main className="admin-main-container flex-1">
           {/* Create Activity */}
-          <section className="admin-section">
-            <header className="admin-section-header">
-              <h1>Create Activity</h1>
-              <p>Fill the form to add a new activity</p>
-            </header>
-            <form className="admin-form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Title:</label>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-              </div>
-              <div className="form-group">
-                <label>Content:</label>
-                <input type="text" value={content} onChange={(e) => setContent(e.target.value)} />
-              </div>
-              <div className="form-group">
-                <label>Type:</label>
-                <select value={type} onChange={(e) => setType(e.target.value)} required className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#40277E]">
-    <option value="">-- اختر النوع --</option>
-    <option value="ترفيهي">ترفيهي</option>
-    <option value="رياضي">رياضي</option>
-    <option value="ثقافي">ثقافي</option>
-    <option value="اجتماعي">اجتماعي</option>
-  </select>
-              </div>
-              <div className="form-group">
-                <label>Start Date:</label>
-                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-              </div>
-              <div className="form-group">
-                <label>End Date:</label>
-                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-              </div>
-              <button type="submit" className="btn-primary">Create</button>
-            </form>
-          </section>
+         <section className="admin-section">
+  <header className="admin-section-header">
+    <h1>Create Activity</h1>
+    <p>Fill the form to add a new activity</p>
+  </header>
+
+  <form className="admin-form grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
+    {/* Title */}
+    <div className="form-group flex flex-col">
+      <label className="mb-1 font-medium">Title:</label>
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        required
+        placeholder="Enter activity title"
+        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    {/* Type */}
+    <div className="form-group flex flex-col">
+      <label className="mb-1 font-medium">Type:</label>
+      <select
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        required
+        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      >
+        <option value="">-- اختر النوع --</option>
+        <option value="ترفيهي">ترفيهي</option>
+        <option value="رياضي">رياضي</option>
+        <option value="ثقافي">ثقافي</option>
+        <option value="اجتماعي">اجتماعي</option>
+      </select>
+    </div>
+
+    {/* Start Date */}
+    <div className="form-group flex flex-col">
+      <label className="mb-1 font-medium">Start Date:</label>
+      <input
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    {/* End Date */}
+    <div className="form-group flex flex-col">
+      <label className="mb-1 font-medium">End Date:</label>
+      <input
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    {/* Content (full width) */}
+    <div className="form-group flex flex-col md:col-span-2">
+      <label className="mb-1 font-medium">Content:</label>
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        rows={5}
+        placeholder="Enter activity details"
+        className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#40277E]"
+      />
+    </div>
+
+    {/* Submit button (full width) */}
+    <div className="md:col-span-2">
+      <button
+        type="submit"
+        className="btn-primary w-full py-2 mt-2"
+      >
+        Create
+      </button>
+    </div>
+  </form>
+</section>
+
 
           {/* Activities List */}
           <section className="admin-section">
